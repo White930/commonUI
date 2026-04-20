@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3456/slot-control.html)",
+      "Bash(findstr /n \"UI_BUTTON_SPIN\" \"C:/Users/white.li/Documents/commonUI/slot-control.html\")",
+      "Bash(curl -s http://localhost:3456/slot-control.html)",
+      "Bash(curl -v http://localhost:3456/slot-control.html)",
+      "Bash(curl -sL http://localhost:3456/slot-control.html)",
+      "Bash(curl -sL http://localhost:57198/slot-control.html)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//c/Users/white.li/Documents/commonUI/**)",
+      "Bash(done)",
+      "Bash(python3 -c \"from PIL import Image; print\\(''PIL available''\\)\")",
+      "Bash(python -c \"from PIL import Image; import numpy as np; print\\(''OK''\\)\")",
+      "Bash(pip install:*)",
+      "Bash(python:*)",
+      "mcp__mcp-registry__search_mcp_registry",
+      "Bash(cp C:/Users/white.li/Documents/commonUI/SlotUI.ts C:/Users/white.li/Documents/client-59/assets/5100/scripts/SlotUI.ts)",
+      "Bash(cp C:/Users/white.li/Documents/commonUI/SlotUIComponent.ts C:/Users/white.li/Documents/client-59/assets/5100/scripts/SlotUIComponent.ts)",
+      "Bash(node build_inline.js)",
+      "Bash(' + css + ')",
+      "Bash(' + html + ')",
+      "Bash(' + js + ')",
+      "Bash(node -e ':*)",
+      "Bash(node generate_slotui.js)",
+      "Bash(cp SlotUI.ts \"../client-59/assets/5100/scripts/SlotUI.ts\")",
+      "Bash(cp SlotUIComponent.ts \"../client-59/assets/5100/scripts/SlotUIComponent.ts\")",
+      "Bash(grep -rn \"StopSpinByUtilFeature\\\\|featureGame\\\\|stopSpinByUtil\\\\|untilFeature\" \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-59\\\\assets\\\\sub_module\\\\game\\\\machine\\\\\" --include=\"*.ts\" | grep -v \"AutoSpin\" | head -20)",
+      "Bash(dir \"C:\\\\Users\\\\white.li\\\\Documents\\\\commonUI\\\\\" 2>&1 | head -20)",
+      "Bash(grep -v \".prefab\\\\|\\\\.meta\\\\|//.*totalWin\")",
+      "Bash(python3 -c \"from PIL import Image; img = Image.open\\(r'C:/Users/white.li/Documents/client-game/35grid/sprites/3507/common/total_multiplier.png'\\); print\\(img.size\\)\")"
+    ]
+  }
+}

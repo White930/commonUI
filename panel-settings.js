@@ -10,8 +10,7 @@
   }
   function renderSettings() {
     document.querySelectorAll('#settings-panel .sp-speed-zone').forEach(function(btn) {
-      if (btn.dataset.spd === settingsState.spinSpeed) btn.classList.add('active');
-      else btn.classList.remove('active');
+      btn.classList.toggle('active', btn.dataset.spd === settingsState.spinSpeed);
     });
     var sfxEl = document.getElementById('sp-sfx-toggle');
     var musEl = document.getElementById('sp-music-toggle');

@@ -28,8 +28,7 @@
     if (autoState.untilFeature) toggle.classList.add('on');
     else toggle.classList.remove('on');
     document.querySelectorAll('#auto-panel .ap-speed-zone').forEach(function(btn) {
-      if (btn.dataset.spd === autoState.speed) btn.classList.add('active');
-      else btn.classList.remove('active');
+      btn.classList.toggle('active', btn.dataset.spd === autoState.speed);
     });
   }
 

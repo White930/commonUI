@@ -35,7 +35,14 @@
       "Read(//mnt/c/**)",
       "Read(//c/Users//**)",
       "Bash(node -e ' *)",
-      "Bash(node build.js)"
+      "Bash(node build.js)",
+      "Bash(node deploy.js)",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(node deploy-59.js)",
+      "Bash(dir \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-59\\\\preview-template\\\\slot-ui\")",
+      "mcp__Claude_in_Chrome__navigate",
+      "mcp__Claude_in_Chrome__computer",
+      "mcp__Claude_in_Chrome__read_console_messages"
     ]
   }
 }

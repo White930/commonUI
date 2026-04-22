@@ -55,15 +55,20 @@
 /* speed selector — inherits .sp-speed-selector/.sp-speed-bg from panel-settings.css */
 .ap-speed-zone {
   position: absolute; top: 0; bottom: 0; width: 33.34%;
-  background: none; border: none; cursor: pointer; padding: 0;
+  background: none; border: none; cursor: pointer;
+  padding: 0; margin: 0;
   display: flex; align-items: center; justify-content: center;
-  overflow: visible;
 }
 .ap-speed-zone[data-spd="normal"] { left: 0; }
 .ap-speed-zone[data-spd="fast"]   { left: 33.33%; }
 .ap-speed-zone[data-spd="turbo"]  { left: 66.67%; }
-.ap-speed-zone img { height: 85%; width: auto; opacity: 0; transition: opacity 0.1s; }
+.ap-speed-zone img {
+  display: block; width: 100%; height: auto;
+  opacity: 0; transition: opacity 0.1s;
+}
 .ap-speed-zone.active img { opacity: 1; }
+.ap-speed-zone[data-spd="normal"] img { transform: translateX(10px); }
+.ap-speed-zone[data-spd="turbo"]  img { transform: translateX(-10px); }
 
 /* counter row */
 .ap-row {

@@ -64,20 +64,25 @@ body.is-landscape #settings-panel {
   text-transform: uppercase; letter-spacing: 1.5px;
 }
 
-/* speed selector — background image + individual active button images */
+/* speed selector */
 .sp-speed-selector { position: relative; width: 100%; }
-.sp-speed-bg { width: 100%; height: auto; display: block; }
+.sp-speed-bg { display: block; width: 100%; height: auto; }
 .sp-speed-zone {
   position: absolute; top: 0; bottom: 0; width: 33.34%;
-  background: none; border: none; cursor: pointer; padding: 0;
+  background: none; border: none; cursor: pointer;
+  padding: 0; margin: 0;
   display: flex; align-items: center; justify-content: center;
-  overflow: visible;
 }
 .sp-speed-zone[data-spd="normal"] { left: 0; }
 .sp-speed-zone[data-spd="fast"]   { left: 33.33%; }
 .sp-speed-zone[data-spd="turbo"]  { left: 66.67%; }
-.sp-speed-zone img { height: 85%; width: auto; opacity: 0; transition: opacity 0.1s; }
+.sp-speed-zone img {
+  display: block; width: 100%; height: auto;
+  opacity: 0; transition: opacity 0.1s;
+}
 .sp-speed-zone.active img { opacity: 1; }
+.sp-speed-zone[data-spd="normal"] img { transform: translateX(10px); }
+.sp-speed-zone[data-spd="turbo"]  img { transform: translateX(-10px); }
 
 /* toggle row */
 .sp-toggle-row {

@@ -7,20 +7,44 @@ const path = require('path');
 
 // ── 1. 讀取圖片並轉 base64 ────────────────────────────────────────────────────
 const imgDir = path.join(__dirname, 'images');
-const imgMap = {
-  'images/UI_BUTTON_AUTOPLAY_IDLE.png': 'data:image/png;base64,' + fs.readFileSync(path.join(imgDir, 'UI_BUTTON_AUTOPLAY_IDLE.png')).toString('base64'),
-  'images/UI_BUTTON_HYPERSPIN.png':     'data:image/png;base64,' + fs.readFileSync(path.join(imgDir, 'UI_BUTTON_HYPERSPIN.png')).toString('base64'),
-  'images/UI_BUTTON_MINUS.png':         'data:image/png;base64,' + fs.readFileSync(path.join(imgDir, 'UI_BUTTON_MINUS.png')).toString('base64'),
-  'images/UI_BUTTON_PLUS.png':          'data:image/png;base64,' + fs.readFileSync(path.join(imgDir, 'UI_BUTTON_PLUS.png')).toString('base64'),
-  'images/UI_BUTTON_SETTING.png':       'data:image/png;base64,' + fs.readFileSync(path.join(imgDir, 'UI_BUTTON_SETTING.png')).toString('base64'),
-  'images/UI_BUTTON_SPEED_FAST.png':    'data:image/png;base64,' + fs.readFileSync(path.join(imgDir, 'UI_BUTTON_SPEED_FAST.png')).toString('base64'),
-  'images/UI_BUTTON_SPIN.png':          'data:image/png;base64,' + fs.readFileSync(path.join(imgDir, 'UI_BUTTON_SPIN.png')).toString('base64'),
-};
+function b64(name) {
+  const f = path.join(imgDir, name);
+  if (!fs.existsSync(f)) { console.warn('⚠ 圖片不存在，跳過：', name); return null; }
+  return 'data:image/png;base64,' + fs.readFileSync(f).toString('base64');
+}
+const _imgs = [
+  'UI_BUTTON_AUTOPLAY_IDLE.png',
+  'UI_BUTTON_HYPERSPIN.png',
+  'UI_BUTTON_MINUS.png',
+  'UI_BUTTON_PLUS.png',
+  'UI_BUTTON_SETTING.png',
+  'UI_BUTTON_SPEED_FAST.png',
+  'UI_BUTTON_SPEED_NORMAL.png',
+  'UI_BUTTON_SPEED_TURBO.png',
+  'UI_BUTTON_SPIN.png',
+  'UI_SPEED_SELECTOR.png',
+  'UI_SPEED_SELECTOR_NORMAL.png',
+  'UI_SPEED_SELECTOR_FAST.png',
+  'UI_SPEED_SELECTOR_TURBO.png',
+  'SETTINGS_ACTION_HISTORY_ICON.png',
+  'SETTINGS_ACTION_FULLSCREEN_ICON.png',
+  'SETTINGS_ACTION_HOWTOPLAY_ICON.png',
+  'SETTINGS_ACTION_FAVORITE_ICON_ACTIVE.png',
+  'FAVORITE.png',
+];
+const imgMap = {};
+_imgs.forEach(function(name) {
+  const data = b64(name);
+  if (data) imgMap['images/' + name] = data;
+});
 
 // ── 2. 讀取 slot-control.html 並替換圖片 ────────────────────────────────────
 let html = fs.readFileSync(path.join(__dirname, 'slot-control.html'), 'utf8');
 for (const [src, data] of Object.entries(imgMap)) {
+  // 替換 HTML src 屬性：src="images/..."
   html = html.split('src="' + src + '"').join('src="' + data + '"');
+  // 替換 JS 字串字面值：'images/...' （用於動態 img.src 賦值）
+  html = html.split("'" + src + "'").join("'" + data + "'");
 }
 
 // ── 3. 拆解 CSS / Body HTML / JS ─────────────────────────────────────────────

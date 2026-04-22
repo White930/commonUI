@@ -206,36 +206,36 @@ body.is-portrait  #landscape { display: none !important; }
   z-index: 99998;
 }
 #settings-overlay.open {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(0,0,0,0.82);
 }
 
 #settings-panel {
-  position: fixed;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
   background: #1c1c1c;
   border-radius: 16px;
-  width: min(340px, 92vw);
+  width: 320px;
+  max-width: 90vw;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0,0,0,0.7);
 }
-/* 橫式：左對齊，底部對齊底欄上方 */
+/* 橫式：固定左下角 */
 body.is-landscape #settings-panel {
+  position: fixed;
   left: 12px;
   bottom: 180px;
-  top: auto;
-  transform: none;
-  width: min(340px, 55vw);
+  width: min(320px, 55vw);
 }
 
 /* title */
 .sp-title-bar {
   display: flex; align-items: center; justify-content: center;
   position: relative;
-  padding: 28px 20px;
+  padding: 18px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.08);
 }
 .sp-title-bar span {
@@ -243,7 +243,7 @@ body.is-landscape #settings-panel {
   text-transform: uppercase; letter-spacing: 2px;
 }
 .sp-close {
-  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
   width: 28px; height: 28px; border-radius: 50%;
   background: rgba(255,255,255,0.12);
   font-size: 14px; color: #fff; cursor: pointer;
@@ -254,26 +254,34 @@ body.is-landscape #settings-panel {
 
 /* section */
 .sp-section {
-  padding: 24px 20px;
+  padding: 16px 20px;
   border-bottom: 1px solid rgba(255,255,255,0.07);
-  display: flex; flex-direction: column; gap: 20px;
+  display: flex; flex-direction: column; gap: 12px;
 }
 .sp-section-label {
-  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45);
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45);
   text-transform: uppercase; letter-spacing: 1.5px;
 }
 
-/* speed selector — single image with 3 transparent click zones */
+/* speed selector */
 .sp-speed-selector { position: relative; width: 100%; }
-.sp-speed-selector > img { width: 100%; height: auto; display: block; }
+.sp-speed-bg { display: block; width: 100%; height: auto; }
 .sp-speed-zone {
   position: absolute; top: 0; bottom: 0; width: 33.34%;
   background: none; border: none; cursor: pointer;
+  padding: 0; margin: 0;
+  display: flex; align-items: center; justify-content: center;
 }
 .sp-speed-zone[data-spd="normal"] { left: 0; }
 .sp-speed-zone[data-spd="fast"]   { left: 33.33%; }
 .sp-speed-zone[data-spd="turbo"]  { left: 66.67%; }
-.sp-speed-zone:active { opacity: 0.6; }
+.sp-speed-zone img {
+  display: block; width: 100%; height: auto;
+  opacity: 0; transition: opacity 0.1s;
+}
+.sp-speed-zone.active img { opacity: 1; }
+.sp-speed-zone[data-spd="normal"] img { transform: translateX(10px); }
+.sp-speed-zone[data-spd="turbo"]  img { transform: translateX(-10px); }
 
 /* toggle row */
 .sp-toggle-row {
@@ -281,7 +289,7 @@ body.is-landscape #settings-panel {
 }
 .sp-toggle-label { font-size: 13px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
 .sp-toggle-track {
-  width: 64px; height: 32px; border-radius: 16px;
+  width: 44px; height: 24px; border-radius: 12px;
   background: rgba(255,255,255,0.15);
   position: relative; cursor: pointer; flex-shrink: 0;
   transition: background 0.2s;
@@ -289,23 +297,23 @@ body.is-landscape #settings-panel {
 .sp-toggle-track.on { background: #00c8a0; }
 .sp-toggle-thumb {
   position: absolute; top: 3px; left: 3px;
-  width: 26px; height: 26px; border-radius: 50%;
+  width: 18px; height: 18px; border-radius: 50%;
   background: #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.35);
-  transition: left 0.2s; pointer-events: none;
+  transition: transform 0.2s; pointer-events: none;
 }
-.sp-toggle-track.on .sp-toggle-thumb { left: calc(100% - 29px); }
+.sp-toggle-track.on .sp-toggle-thumb { transform: translateX(20px); }
 
 /* bottom icon buttons */
 .sp-icon-row {
   display: flex; justify-content: space-around;
-  padding: 26px 10px 30px;
+  padding: 16px 10px 18px;
 }
 .sp-icon-btn {
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   background: none; border: none; cursor: pointer;
 }
-.sp-icon-btn img { width: 48px; height: 48px; display: block; }
+.sp-icon-btn img { display: block; width: 56px; height: 56px; object-fit: contain; }
 .sp-icon-btn span { font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 600; letter-spacing: 0.5px; }
 .sp-icon-btn:active { opacity: 0.7; }
 
@@ -494,15 +502,23 @@ body.is-landscape #settings-panel {
   margin-bottom: 8px;
 }
 
-/* speed selector — same image style as settings panel */
+/* speed selector — inherits .sp-speed-selector/.sp-speed-bg from panel-settings.css */
 .ap-speed-zone {
   position: absolute; top: 0; bottom: 0; width: 33.34%;
   background: none; border: none; cursor: pointer;
+  padding: 0; margin: 0;
+  display: flex; align-items: center; justify-content: center;
 }
 .ap-speed-zone[data-spd="normal"] { left: 0; }
 .ap-speed-zone[data-spd="fast"]   { left: 33.33%; }
 .ap-speed-zone[data-spd="turbo"]  { left: 66.67%; }
-.ap-speed-zone:active { opacity: 0.6; }
+.ap-speed-zone img {
+  display: block; width: 100%; height: auto;
+  opacity: 0; transition: opacity 0.1s;
+}
+.ap-speed-zone.active img { opacity: 1; }
+.ap-speed-zone[data-spd="normal"] img { transform: translateX(10px); }
+.ap-speed-zone[data-spd="turbo"]  img { transform: translateX(-10px); }
 
 /* counter row */
 .ap-row {
@@ -572,10 +588,10 @@ body.is-landscape #settings-panel {
     <div class="sp-section">
       <div class="sp-section-label">Spin Animation</div>
       <div class="sp-speed-selector">
-        <img src="images/UI_SPEED_SELECTOR_NORMAL.png" id="sp-speed-img" alt="">
-        <button class="sp-speed-zone" data-spd="normal"></button>
-        <button class="sp-speed-zone" data-spd="fast"></button>
-        <button class="sp-speed-zone" data-spd="turbo"></button>
+        <img src="images/UI_SPEED_SELECTOR.png" class="sp-speed-bg" alt="">
+        <button class="sp-speed-zone" data-spd="normal"><img src="images/UI_SPEED_SELECTOR_NORMAL.png" alt=""></button>
+        <button class="sp-speed-zone" data-spd="fast"><img src="images/UI_SPEED_SELECTOR_FAST.png" alt=""></button>
+        <button class="sp-speed-zone" data-spd="turbo"><img src="images/UI_SPEED_SELECTOR_TURBO.png" alt=""></button>
       </div>
     </div>
 
@@ -586,9 +602,6 @@ body.is-landscape #settings-panel {
           <div class="sp-toggle-thumb"></div>
         </div>
       </div>
-    </div>
-
-    <div class="sp-section">
       <div class="sp-toggle-row">
         <span class="sp-toggle-label">Music</span>
         <div class="sp-toggle-track on" id="sp-music-toggle">
@@ -704,13 +717,13 @@ body.is-landscape #settings-panel {
       <button class="ap-close" id="ap-close">✕</button>
     </div>
 
-    <div>
+    <div >
       <div class="ap-section-label">Auto Play Spin Animation</div>
       <div class="sp-speed-selector">
-        <img src="images/UI_SPEED_SELECTOR_NORMAL.png" id="ap-speed-img" alt="">
-        <button class="ap-speed-zone" data-spd="normal"></button>
-        <button class="ap-speed-zone" data-spd="fast"></button>
-        <button class="ap-speed-zone" data-spd="turbo"></button>
+        <img src="images/UI_SPEED_SELECTOR.png" class="sp-speed-bg" alt="">
+        <button class="ap-speed-zone" data-spd="normal"><img src="images/UI_SPEED_SELECTOR_NORMAL.png" alt=""></button>
+        <button class="ap-speed-zone" data-spd="fast"><img src="images/UI_SPEED_SELECTOR_FAST.png" alt=""></button>
+        <button class="ap-speed-zone" data-spd="turbo"><img src="images/UI_SPEED_SELECTOR_TURBO.png" alt=""></button>
       </div>
     </div>
 
@@ -1039,8 +1052,9 @@ body.is-landscape #settings-panel {
     var toggle = document.getElementById('ap-feature-toggle');
     if (autoState.untilFeature) toggle.classList.add('on');
     else toggle.classList.remove('on');
-    var apImg = document.getElementById('ap-speed-img');
-    if (apImg) apImg.src = SP_SPEED_IMAGES[autoState.speed];
+    document.querySelectorAll('#auto-panel .ap-speed-zone').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.spd === autoState.speed);
+    });
   }
 
   function initAutoPanel() {
@@ -1201,12 +1215,6 @@ body.is-landscape #settings-panel {
   /* ── Settings panel ── */
   var settingsState = { spinSpeed: 'fast', sfx: true, music: true, favorite: false };
 
-  var SP_SPEED_IMAGES = {
-    normal: 'images/UI_SPEED_SELECTOR_NORMAL.png',
-    fast:   'images/UI_SPEED_SELECTOR_FAST.png',
-    turbo:  'images/UI_SPEED_SELECTOR_TURBO.png',
-  };
-
   function openSettings() {
     renderSettings();
     document.getElementById('settings-overlay').classList.add('open');
@@ -1215,8 +1223,9 @@ body.is-landscape #settings-panel {
     document.getElementById('settings-overlay').classList.remove('open');
   }
   function renderSettings() {
-    var spImg = document.getElementById('sp-speed-img');
-    if (spImg) spImg.src = SP_SPEED_IMAGES[settingsState.spinSpeed];
+    document.querySelectorAll('#settings-panel .sp-speed-zone').forEach(function(btn) {
+      btn.classList.toggle('active', btn.dataset.spd === settingsState.spinSpeed);
+    });
     var sfxEl = document.getElementById('sp-sfx-toggle');
     var musEl = document.getElementById('sp-music-toggle');
     if (settingsState.sfx)   sfxEl.classList.add('on'); else sfxEl.classList.remove('on');
@@ -1231,7 +1240,7 @@ body.is-landscape #settings-panel {
     document.getElementById('settings-overlay').addEventListener('click', function(e) {
       if (e.target === this) closeSettings();
     });
-    document.querySelectorAll('.sp-speed-zone').forEach(function(btn) {
+    document.querySelectorAll('#settings-panel .sp-speed-zone').forEach(function(btn) {
       btn.addEventListener('click', function() {
         settingsState.spinSpeed = this.dataset.spd;
         renderSettings();

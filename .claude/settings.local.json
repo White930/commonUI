@@ -30,7 +30,12 @@
       "Bash(grep -rn \"StopSpinByUtilFeature\\\\|featureGame\\\\|stopSpinByUtil\\\\|untilFeature\" \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-59\\\\assets\\\\sub_module\\\\game\\\\machine\\\\\" --include=\"*.ts\" | grep -v \"AutoSpin\" | head -20)",
       "Bash(dir \"C:\\\\Users\\\\white.li\\\\Documents\\\\commonUI\\\\\" 2>&1 | head -20)",
       "Bash(grep -v \".prefab\\\\|\\\\.meta\\\\|//.*totalWin\")",
-      "Bash(python3 -c \"from PIL import Image; img = Image.open\\(r'C:/Users/white.li/Documents/client-game/35grid/sprites/3507/common/total_multiplier.png'\\); print\\(img.size\\)\")"
+      "Bash(python3 -c \"from PIL import Image; img = Image.open\\(r'C:/Users/white.li/Documents/client-game/35grid/sprites/3507/common/total_multiplier.png'\\); print\\(img.size\\)\")",
+      "Bash(copy \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-21\\\\21fruit\\\\slot-control.html\" \"C:\\\\Users\\\\white.li\\\\Documents\\\\commonUI\\\\slot-control.html\")",
+      "Read(//mnt/c/**)",
+      "Read(//c/Users//**)",
+      "Bash(node -e ' *)",
+      "Bash(node build.js)"
     ]
   }
 }

@@ -1,0 +1,128 @@
+/* ── Hyper Spin Panel ── */
+#hs-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 99999;
+}
+#hs-overlay.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.82);
+}
+
+#hs-panel {
+  background: #1a1a2e;
+  border-radius: 18px;
+  padding: 0 0 20px;
+  width: 300px;
+  max-width: 92vw;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: block;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+  overflow: hidden;
+}
+
+/* title bar */
+.hs-title-bar {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 60%, #43a047 100%);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 12px;
+}
+.hs-title-badge {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 20px;
+  padding: 5px 12px 5px 8px;
+}
+.hs-title-badge .hs-rocket-icon { font-size: 17px; line-height: 1; }
+.hs-title-badge span { font-size: 13px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 2px; }
+.hs-close {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  font-size: 13px; color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border: none; flex-shrink: 0;
+}
+.hs-close:active { background: rgba(255,255,255,0.35); }
+
+.hs-rows { display: contents; }
+.hs-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hs-row:last-child { border-bottom: none; }
+
+.hs-row-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hs-row-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; }
+.hs-row-sub   { font-size: 9px;  color: rgba(255,255,255,0.30); text-transform: uppercase; letter-spacing: 1px; }
+
+/* counter */
+.hs-counter { display: flex; align-items: center; gap: 10px; }
+.hs-counter-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.18);
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1; flex-shrink: 0;
+  transition: background 0.12s;
+}
+.hs-counter-btn:active { background: rgba(255,255,255,0.22); transform: scale(0.9); }
+.hs-counter-val { font-size: 15px; font-weight: 800; color: #fff; min-width: 72px; text-align: center; }
+
+/* toggle */
+.hs-toggle-right { display: flex; align-items: center; gap: 8px; }
+.hs-info-btn {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); border: none;
+  color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 900;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.hs-toggle-track {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  position: relative; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.hs-toggle-track.on { background: #43a047; }
+.hs-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; transition: transform 0.2s; pointer-events: none;
+}
+.hs-toggle-track.on .hs-toggle-thumb { transform: translateX(20px); }
+
+/* saldo row */
+.hs-saldo {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 12px 18px 0;
+}
+.hs-saldo-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; }
+.hs-saldo-val   { font-size: 14px; font-weight: 800; color: #81c784; letter-spacing: 0.5px; }
+
+/* play button */
+.hs-play-wrap {
+  display: flex; justify-content: center;
+  padding: 16px 0 4px;
+}
+.hs-play-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #66bb6a, #2e7d32);
+  border: 3px solid #a5d6a7;
+  box-shadow: 0 4px 18px rgba(46,125,50,0.6);
+  color: #fff; font-size: 26px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: filter 0.12s, transform 0.12s;
+  padding-left: 4px;
+}
+.hs-play-btn:active { filter: brightness(0.82); transform: scale(0.93); }

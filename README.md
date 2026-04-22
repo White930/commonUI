@@ -9,17 +9,49 @@
 
 ```
 commonUI/
-├── slot-control.html       # 核心 UI（HTML/CSS/JS，圖片已內嵌 base64）
-├── SlotUI.ts               # 框架無關橋接器（自動由 generate_slotui.js 產生）
-├── SlotUIComponent.ts      # Cocos Creator 3.x 包裝器（掛到場景 Node 上）
-├── generate_slotui.js      # 將 slot-control.html 內嵌進 SlotUI.ts 的工具腳本
-├── demo.html               # 完整展示頁
-├── build_inline.js         # 建置工具
-└── images/                 # UI 圖示（PNG，已內嵌進 slot-control.html）
+├── slot-control.html        # 核心 UI（HTML/CSS/JS，圖片已內嵌 base64）
+├── slot-control-base.html   # 核心 UI 基底（不含內嵌資源）
+├── slot-control.css         # 核心 UI 樣式
+├── slot-control.js          # 核心 UI 邏輯
+├── slot-control-init.js     # 核心 UI 初始化
+│
+├── panel-settings.html      # Settings 彈出面板（HTML 片段）
+├── panel-settings.css       # Settings 面板樣式
+├── panel-settings.js        # Settings 面板邏輯
+│
+├── panel-auto.html          # Auto Play 彈出面板（HTML 片段）
+├── panel-auto.css           # Auto Play 面板樣式
+├── panel-auto.js            # Auto Play 面板邏輯
+│
+├── panel-hyperspin.html     # Hyper Spin 彈出面板（HTML 片段）
+├── panel-hyperspin.css      # Hyper Spin 面板樣式
+├── panel-hyperspin.js       # Hyper Spin 面板邏輯
+│
+├── panel-test.html          # 面板獨立測試頁（fetch 動態載入三個面板）
+│
+├── SlotUI.ts                # 框架無關橋接器（自動由 generate_slotui.js 產生）
+├── SlotUIComponent.ts       # Cocos Creator 3.x 包裝器（掛到場景 Node 上）
+├── generate_slotui.js       # 將 slot-control.html 內嵌進 SlotUI.ts 的工具腳本
+├── build.js                 # 建置工具
+└── images/                  # UI 圖示（PNG）
 ```
 
 > **修改流程**：編輯 `slot-control.html` 後，執行 `node generate_slotui.js`
 > 重新產生 `SlotUI.ts`，再同步到遊戲專案。
+
+### 彈出面板
+
+三個面板（Settings / Auto Play / Hyper Spin）各自獨立為 HTML 片段 + CSS + JS，
+由 `panel-test.html` 透過 `fetch()` 動態載入，方便獨立開發與測試：
+
+```
+panel-test.html
+  ├─ fetch → panel-settings.html  +  panel-settings.css  +  panel-settings.js
+  ├─ fetch → panel-auto.html      +  panel-auto.css      +  panel-auto.js
+  └─ fetch → panel-hyperspin.html +  panel-hyperspin.css +  panel-hyperspin.js
+```
+
+> **注意**：`fetch()` 需要 HTTP server，請用 `npx serve .` 或 VS Code Live Server 開啟，不支援 `file://` 直接開啟。
 
 ---
 
@@ -115,9 +147,17 @@ comp.stopAutoSpin();             // 強制停止 Auto Play
 
 | 按鈕 | 面板 | 主要功能 |
 |------|------|----------|
-| ≡ 選單 | **Settings** | 速度選擇、音效/音樂開關、History / Full Screen / How to Play / Favorite |
+| ≡ 選單 | **Settings** | 速度選擇（Normal / Fast / Turbo）、音效/音樂開關、History / Full Screen / How to Play / Favorite |
 | 🚀 火箭 | **Hyper Spin** | 選擇投注、局數（5–50）、Super Bet、Berhenti di Scatter、顯示餘額 |
-| ↺ Auto | **Auto Play** | 選擇速度、局數（5/10/20/50/100/200/500/∞）、Until Feature 選項 |
+| ↺ Auto | **Auto Play** | 選擇速度（Normal / Fast / Turbo）、投注、局數（5/10/20/50/100/200/500/∞）、Until Feature |
+
+### 速度選擇器（Spin Animation）
+
+Settings 與 Auto Play 面板均內建速度選擇器，使用圖片疊加方式實作：
+
+- `UI_SPEED_SELECTOR.png`：輪廓背景（395×73）
+- `UI_SPEED_SELECTOR_NORMAL/FAST/TURBO.png`：各選項的高亮藥丸圖片（~136×53）
+- 藥丸圖片以 `height: 85%; width: auto` 縮放，保持原始比例置中於各 zone
 
 ### Auto Play 細節
 

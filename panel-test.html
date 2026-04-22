@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel Test</title>
+  <link rel="stylesheet" href="panel-settings.css">
+  <link rel="stylesheet" href="panel-auto.css">
+  <link rel="stylesheet" href="panel-hyperspin.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      gap: 16px;
+    }
+    .test-bar { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+    .test-btn {
+      padding: 10px 22px; border-radius: 8px; border: none;
+      background: #333; color: #fff; font-size: 13px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+    }
+    .test-btn:hover { background: #555; }
+    .test-btn:active { background: #00c8a0; color: #000; }
+    .hint { font-size: 11px; color: rgba(255,255,255,0.3); letter-spacing: 1px; }
+  </style>
+</head>
+<body>
+
+  <span class="hint">PANEL TEST — CLICK TO OPEN</span>
+  <div class="test-bar">
+    <button class="test-btn" id="btn-settings">⚙ Settings</button>
+    <button class="test-btn" id="btn-auto">▶ Auto Play</button>
+    <button class="test-btn" id="btn-hyperspin">🚀 Hyper Spin</button>
+  </div>
+
+  <div id="panel-containers"></div>
+
+  <script>
+    /* ── stubs ── */
+    function dispatch(type, data) { console.log('[dispatch]', type, data); }
+    var state = { totalBet: 1000, balance: 500000, speedMode: 0, minBet: 100, maxBet: 100000, betStep: 100 };
+    var SPEED_LABELS = ['normal', 'fast', 'turbo'];
+    function fmt(n) { return '$ ' + Number(n).toLocaleString(); }
+    function renderSpeed() {}
+  </script>
+
+  <script src="panel-settings.js"></script>
+  <script src="panel-auto.js"></script>
+  <script src="panel-hyperspin.js"></script>
+
+  <script>
+    Promise.all([
+      fetch('panel-settings.html').then(function(r) { return r.text(); }),
+      fetch('panel-auto.html').then(function(r) { return r.text(); }),
+      fetch('panel-hyperspin.html').then(function(r) { return r.text(); }),
+    ]).then(function(parts) {
+      document.getElementById('panel-containers').innerHTML = parts.join('');
+
+      initSettings();
+      initAutoPanel();
+      initHyperSpinPanel();
+
+      document.getElementById('btn-settings').onclick  = function() { openSettings(); };
+      document.getElementById('btn-auto').onclick       = function() { openAutoPanel(); };
+      document.getElementById('btn-hyperspin').onclick  = function() { openHyperSpinPanel(); };
+    });
+  </script>
+
+</body>
+</html>

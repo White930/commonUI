@@ -1,0 +1,114 @@
+/* ── Settings Panel ── */
+#settings-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 99998;
+}
+#settings-overlay.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.82);
+}
+
+#settings-panel {
+  background: #1c1c1c;
+  border-radius: 16px;
+  width: 320px;
+  max-width: 90vw;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+}
+/* 橫式：固定左下角 */
+body.is-landscape #settings-panel {
+  position: fixed;
+  left: 12px;
+  bottom: 180px;
+  width: min(320px, 55vw);
+}
+
+/* title */
+.sp-title-bar {
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sp-title-bar span {
+  font-size: 15px; font-weight: 800; color: #fff;
+  text-transform: uppercase; letter-spacing: 2px;
+}
+.sp-close {
+  position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  font-size: 14px; color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border: none; flex-shrink: 0;
+}
+.sp-close:active { background: rgba(255,255,255,0.28); }
+
+/* section */
+.sp-section {
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.sp-section-label {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 1.5px;
+}
+
+/* speed selector — background image + individual active button images */
+.sp-speed-selector { position: relative; width: 100%; }
+.sp-speed-bg { width: 100%; height: auto; display: block; }
+.sp-speed-zone {
+  position: absolute; top: 0; bottom: 0; width: 33.34%;
+  background: none; border: none; cursor: pointer; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  overflow: visible;
+}
+.sp-speed-zone[data-spd="normal"] { left: 0; }
+.sp-speed-zone[data-spd="fast"]   { left: 33.33%; }
+.sp-speed-zone[data-spd="turbo"]  { left: 66.67%; }
+.sp-speed-zone img { height: 85%; width: auto; opacity: 0; transition: opacity 0.1s; }
+.sp-speed-zone.active img { opacity: 1; }
+
+/* toggle row */
+.sp-toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sp-toggle-label { font-size: 13px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+.sp-toggle-track {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  position: relative; cursor: pointer; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.sp-toggle-track.on { background: #00c8a0; }
+.sp-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  transition: transform 0.2s; pointer-events: none;
+}
+.sp-toggle-track.on .sp-toggle-thumb { transform: translateX(20px); }
+
+/* bottom icon buttons */
+.sp-icon-row {
+  display: flex; justify-content: space-around;
+  padding: 16px 10px 18px;
+}
+.sp-icon-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+}
+.sp-icon-btn img { display: block; width: 56px; height: 56px; object-fit: contain; }
+.sp-icon-btn span { font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 600; letter-spacing: 0.5px; }
+.sp-icon-btn:active { opacity: 0.7; }

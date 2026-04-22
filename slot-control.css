@@ -1,0 +1,190 @@
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Arial', 'Helvetica Neue', sans-serif;
+}
+
+/* ── Shared button reset ── */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  -webkit-user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+button:active { transform: scale(0.90); filter: brightness(1.3); }
+
+/* ── Label / Value  (基準：直式 720×1280) ── */
+.lbl { font-size: 12px; color: rgba(255,255,255,0.50); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.val { font-size: 16px; color: #ffffff; font-weight: bold; letter-spacing: 0.2px; white-space: nowrap; }
+.val.bet { color: #f7d12e; }
+
+/* ── Icon button  (直式基準 46px ≈ 720×6.4%) ── */
+.ibtn { width: 46px; height: 46px; }
+.ibtn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+
+/* Auto spin – count overlay on the SPIN button */
+.auto-count-face {
+  display: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 35%, #888 0%, #2a2a2a 80%, #1a1a1a 100%);
+  box-shadow:
+    0 0 0 2.5px #c0c0c0,
+    0 0 0 4.5px #444,
+    inset 0 1px 3px rgba(255,255,255,0.18),
+    0 3px 10px rgba(0,0,0,0.65);
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.95);
+  pointer-events: none;
+}
+/* show count face on spin button when auto is running */
+.spin-btn.auto-locked .auto-count-face { display: flex; }
+
+/* Speed mode badge */
+.speed-badge {
+  position: absolute;
+  bottom: 0px; right: 0px;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  background: #aaaaaa;
+  color: #000;
+  font-size: 9px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  transition: background 0.2s;
+}
+
+/* ── Bet ± buttons  (直式基準 50px ≈ 720×6.9%) ── */
+.bbtn { width: 50px; height: 50px; }
+.bbtn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+
+/* ── SPIN button  (直式基準 90px ≈ 720×12.5%) ── */
+.spin-btn { width: 90px; height: 90px; position: relative; }
+.spin-btn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+
+/* spinning state – spin 結束前完全鎖住，不可再按 */
+.spin-btn.spinning { pointer-events: none; }
+.spin-btn.spinning img { filter: brightness(0.5); }
+
+/* auto spin running – spin button locked */
+.spin-btn.auto-locked { pointer-events: none; }
+.spin-btn.auto-locked img { filter: brightness(0.35) saturate(0); }
+
+/* bet value flash */
+@keyframes flash-gold { 0%,100%{ color:#f7d12e } 40%{ color:#fff } }
+.flash { animation: flash-gold 0.3s ease; }
+
+/* ═══════════════════════════════════════════════
+   PORTRAIT LAYOUT
+═══════════════════════════════════════════════ */
+#portrait {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.92) 100%);
+  padding: 28px 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#portrait .p-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 2px 0;
+}
+#portrait .p-info .info-block {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 6px 18px;
+  min-width: 150px;
+}
+#portrait .p-info .sep { display: none; }
+
+#portrait .p-controls {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: visible;
+  padding-bottom: 4px;
+}
+
+#portrait .p-side { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+#portrait .p-side:last-child { align-items: flex-end; }
+#portrait .p-center { display: flex; align-items: center; gap: 5px; flex: 0 0 auto; }
+
+/* ═══════════════════════════════════════════════
+   LANDSCAPE  1280 × 720
+═══════════════════════════════════════════════ */
+#landscape {
+  width: 100%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.92) 100%);
+  padding: 0 20px 8px;
+  height: 170px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  overflow: visible;
+}
+
+#landscape .l-group   { display: flex; align-items: center; gap: 8px; }
+#landscape .l-controls { display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 162px; }
+#landscape .l-spin-row { display: flex; align-items: center; gap: 8px; }
+#landscape .l-sub-row  { display: flex; align-items: center; gap: 10px; }
+#landscape .l-info {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+#landscape .info-block {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 10px 14px;
+  flex: 1;
+  max-width: 240px;
+}
+#landscape .sep { display: none; }
+
+#landscape .spin-btn { width: 100px; height: 100px; }
+#landscape .bbtn     { width: 40px;  height: 40px; }
+#landscape .ibtn     { width: 38px;  height: 38px; }
+#landscape .speed-badge { width: 13px; height: 13px; font-size: 7px; bottom: 0; right: 0; }
+#landscape .lbl { font-size: 10px; }
+#landscape .val { font-size: 15px; }
+
+/* ── Visibility ── */
+#portrait  { display: flex; }
+#landscape { display: none; }
+body.is-landscape #portrait  { display: none !important; }
+body.is-landscape #landscape { display: flex !important; }
+body.is-portrait  #portrait  { display: flex !important; }
+body.is-portrait  #landscape { display: none !important; }

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Slot Control UI</title>
+  <link rel="stylesheet" href="slot-control.css">
+</head>
+<body>
+
+<!-- @include:panel-settings.html -->
+
+<!-- @include:panel-hyperspin.html -->
+
+<!-- @include:panel-auto.html -->
+
+<!-- ═══════════════════ PORTRAIT ═══════════════════ -->
+<div id="portrait">
+
+  <div class="p-info">
+    <div class="info-block">
+      <span class="lbl">Balance</span>
+      <span class="val" id="p-balance">$ 128,890,800.0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="info-block">
+      <span class="lbl">Total Bet</span>
+      <span class="val bet" id="p-bet">$ 10.0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="info-block">
+      <span class="lbl">Total Win</span>
+      <span class="val" id="p-win">$ 128,890,800.0</span>
+    </div>
+  </div>
+
+  <div class="p-controls">
+
+    <div class="p-side">
+      <button class="ibtn" id="p-speed" title="Spin Speed">
+        <img src="images/UI_BUTTON_SPEED_FAST.png" alt="Speed" draggable="false">
+      </button>
+      <button class="ibtn" id="p-auto" title="Auto Spin">
+        <img src="images/UI_BUTTON_AUTOPLAY_IDLE.png" alt="Auto" draggable="false">
+      </button>
+    </div>
+
+    <div class="p-center">
+      <button class="bbtn" id="p-minus" title="Decrease Bet">
+        <img src="images/UI_BUTTON_MINUS.png" alt="-" draggable="false">
+      </button>
+      <button class="spin-btn" id="p-spin" title="Spin">
+        <img src="images/UI_BUTTON_SPIN.png" alt="Spin" draggable="false">
+        <span class="auto-count-face" id="p-spin-auto-count">∞</span>
+      </button>
+      <button class="bbtn" id="p-plus" title="Increase Bet">
+        <img src="images/UI_BUTTON_PLUS.png" alt="+" draggable="false">
+      </button>
+    </div>
+
+    <div class="p-side">
+      <button class="ibtn" id="p-rocket" title="Rocket Spin">
+        <img src="images/UI_BUTTON_HYPERSPIN.png" alt="Rocket" draggable="false">
+      </button>
+      <button class="ibtn" id="p-menu" title="More Options">
+        <img src="images/UI_BUTTON_SETTING.png" alt="Menu" draggable="false">
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════ LANDSCAPE ═══════════════════ -->
+<div id="landscape">
+
+  <div class="l-group">
+    <button class="ibtn" id="l-menu" title="More Options">
+      <img src="images/UI_BUTTON_SETTING.png" alt="Menu" draggable="false">
+    </button>
+    <button class="ibtn" id="l-rocket" title="Rocket Spin">
+      <img src="images/UI_BUTTON_HYPERSPIN.png" alt="Rocket" draggable="false">
+    </button>
+  </div>
+
+  <div class="l-info">
+    <div class="info-block">
+      <span class="lbl">Balance</span>
+      <span class="val" id="l-balance">$ 128,890,800.0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="info-block">
+      <span class="lbl">Total Bet</span>
+      <span class="val bet" id="l-bet">$ 10.0</span>
+    </div>
+    <div class="sep"></div>
+    <div class="info-block">
+      <span class="lbl">Total Win</span>
+      <span class="val" id="l-win">$ 128,890,800.0</span>
+    </div>
+  </div>
+
+  <div class="l-controls">
+    <div class="l-spin-row">
+      <button class="bbtn" id="l-minus" title="Decrease Bet">
+        <img src="images/UI_BUTTON_MINUS.png" alt="-" draggable="false">
+      </button>
+      <button class="spin-btn" id="l-spin" title="Spin">
+        <img src="images/UI_BUTTON_SPIN.png" alt="Spin" draggable="false">
+        <span class="auto-count-face" id="l-spin-auto-count">∞</span>
+      </button>
+      <button class="bbtn" id="l-plus" title="Increase Bet">
+        <img src="images/UI_BUTTON_PLUS.png" alt="+" draggable="false">
+      </button>
+    </div>
+    <div class="l-sub-row">
+      <button class="ibtn" id="l-speed" title="Spin Speed">
+        <img src="images/UI_BUTTON_SPEED_FAST.png" alt="Speed" draggable="false">
+      </button>
+      <button class="ibtn" id="l-auto" title="Auto Spin">
+        <img src="images/UI_BUTTON_AUTOPLAY_IDLE.png" alt="Auto" draggable="false">
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script src="slot-control.js"></script>
+</body>
+</html>

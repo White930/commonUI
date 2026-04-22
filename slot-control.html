@@ -5,556 +5,558 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Slot Control UI</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
+* { margin: 0; padding: 0; box-sizing: border-box; user-select: none; -webkit-tap-highlight-color: transparent; }
 
-    body {
-      background: transparent;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      align-items: center;
-      min-height: 100vh;
-      font-family: 'Arial', 'Helvetica Neue', sans-serif;
-    }
+body {
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 100vh;
+  font-family: 'Arial', 'Helvetica Neue', sans-serif;
+}
 
-    /* ── Shared button reset ── */
-    button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      outline: none;
-      padding: 0;
-      -webkit-user-select: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      transition: transform 0.1s ease, filter 0.1s ease;
-    }
-    button:active { transform: scale(0.90); filter: brightness(1.3); }
+/* ── Shared button reset ── */
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0;
+  -webkit-user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.1s ease, filter 0.1s ease;
+}
+button:active { transform: scale(0.90); filter: brightness(1.3); }
 
-    /* ── Label / Value  (基準：直式 720×1280) ── */
-    .lbl { font-size: 12px; color: rgba(255,255,255,0.50); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-    .val { font-size: 16px; color: #ffffff; font-weight: bold; letter-spacing: 0.2px; white-space: nowrap; }
-    .val.bet { color: #f7d12e; }
+/* ── Label / Value  (基準：直式 720×1280) ── */
+.lbl { font-size: 12px; color: rgba(255,255,255,0.50); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+.val { font-size: 16px; color: #ffffff; font-weight: bold; letter-spacing: 0.2px; white-space: nowrap; }
+.val.bet { color: #f7d12e; }
 
-    /* ── Icon button  (直式基準 46px ≈ 720×6.4%) ── */
-    .ibtn { width: 46px; height: 46px; }
-    .ibtn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+/* ── Icon button  (直式基準 46px ≈ 720×6.4%) ── */
+.ibtn { width: 46px; height: 46px; }
+.ibtn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
 
-    /* Auto spin running badge */
-    .auto-badge {
-      position: absolute;
-      bottom: 0px; right: 0px;
-      min-width: 17px; height: 17px;
-      border-radius: 9px;
-      background: #00c8a0;
-      color: #000;
-      font-size: 9px;
-      font-weight: 900;
-      display: none; align-items: center; justify-content: center;
-      pointer-events: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.6);
-      padding: 0 3px;
-    }
-    .auto-spinning .auto-badge { display: flex; }
-    .auto-spinning img { filter: brightness(1.4) hue-rotate(120deg); }
+/* Auto spin – count overlay on the SPIN button */
+.auto-count-face {
+  display: none;
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 35%, #888 0%, #2a2a2a 80%, #1a1a1a 100%);
+  box-shadow:
+    0 0 0 2.5px #c0c0c0,
+    0 0 0 4.5px #444,
+    inset 0 1px 3px rgba(255,255,255,0.18),
+    0 3px 10px rgba(0,0,0,0.65);
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  text-shadow: 0 1px 5px rgba(0,0,0,0.95);
+  pointer-events: none;
+}
+/* show count face on spin button when auto is running */
+.spin-btn.auto-locked .auto-count-face { display: flex; }
 
-    /* Speed mode badge */
-    .speed-badge {
-      position: absolute;
-      bottom: 0px; right: 0px;
-      width: 17px; height: 17px;
-      border-radius: 50%;
-      background: #aaaaaa;
-      color: #000;
-      font-size: 9px;
-      font-weight: 900;
-      display: flex; align-items: center; justify-content: center;
-      pointer-events: none;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.6);
-      transition: background 0.2s;
-    }
+/* Speed mode badge */
+.speed-badge {
+  position: absolute;
+  bottom: 0px; right: 0px;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  background: #aaaaaa;
+  color: #000;
+  font-size: 9px;
+  font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  transition: background 0.2s;
+}
 
-    /* ── Bet ± buttons  (直式基準 50px ≈ 720×6.9%) ── */
-    .bbtn { width: 50px; height: 50px; }
-    .bbtn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+/* ── Bet ± buttons  (直式基準 50px ≈ 720×6.9%) ── */
+.bbtn { width: 50px; height: 50px; }
+.bbtn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
 
-    /* ── SPIN button  (直式基準 90px ≈ 720×12.5%) ── */
-    .spin-btn { width: 90px; height: 90px; }
-    .spin-btn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
+/* ── SPIN button  (直式基準 90px ≈ 720×12.5%) ── */
+.spin-btn { width: 90px; height: 90px; position: relative; }
+.spin-btn img { width: 100%; height: 100%; display: block; object-fit: contain; pointer-events: none; }
 
-    /* spinning state – spin 結束前完全鎖住，不可再按 */
-    .spin-btn.spinning { pointer-events: none; }
-    .spin-btn.spinning img { filter: brightness(0.5); }
+/* spinning state – spin 結束前完全鎖住，不可再按 */
+.spin-btn.spinning { pointer-events: none; }
+.spin-btn.spinning img { filter: brightness(0.5); }
 
-    /* auto spin running – spin button locked */
-    .spin-btn.auto-locked { pointer-events: none; }
-    .spin-btn.auto-locked img { filter: brightness(0.35) saturate(0); }
+/* auto spin running – spin button locked */
+.spin-btn.auto-locked { pointer-events: none; }
+.spin-btn.auto-locked img { filter: brightness(0.35) saturate(0); }
 
-    /* bet value flash */
-    @keyframes flash-gold { 0%,100%{ color:#f7d12e } 40%{ color:#fff } }
-    .flash { animation: flash-gold 0.3s ease; }
+/* bet value flash */
+@keyframes flash-gold { 0%,100%{ color:#f7d12e } 40%{ color:#fff } }
+.flash { animation: flash-gold 0.3s ease; }
 
-    /* ── Settings Panel ── */
-    #settings-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 99998;
-    }
-    #settings-overlay.open {
-      display: block;
-      background: rgba(0,0,0,0.82);
-    }
+/* ═══════════════════════════════════════════════
+   PORTRAIT LAYOUT
+═══════════════════════════════════════════════ */
+#portrait {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.72) 30%, rgba(0,0,0,0.92) 100%);
+  padding: 28px 22px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    #settings-panel {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: #1c1c1c;
-      border-radius: 12px;
-      width: 230px;
-      max-width: 88vw;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.7);
-    }
+#portrait .p-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  padding: 2px 0;
+}
+#portrait .p-info .info-block {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 6px 18px;
+  min-width: 150px;
+}
+#portrait .p-info .sep { display: none; }
 
-    /* title */
-    .sp-title-bar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 14px 10px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .sp-title-bar span {
-      font-size: 13px; font-weight: 800; color: #fff;
-      text-transform: uppercase; letter-spacing: 2px;
-    }
-    .sp-close {
-      width: 24px; height: 24px; border-radius: 50%;
-      background: rgba(255,255,255,0.12);
-      font-size: 13px; color: #fff; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      border: none; flex-shrink: 0;
-    }
-    .sp-close:active { background: rgba(255,255,255,0.28); }
+#portrait .p-controls {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  overflow: visible;
+  padding-bottom: 4px;
+}
 
-    /* section */
-    .sp-section {
-      padding: 12px 14px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      display: flex; flex-direction: column; gap: 8px;
-    }
-    .sp-section-label {
-      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45);
-      text-transform: uppercase; letter-spacing: 1.5px;
-    }
+#portrait .p-side { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+#portrait .p-side:last-child { align-items: flex-end; }
+#portrait .p-center { display: flex; align-items: center; gap: 5px; flex: 0 0 auto; }
 
-    /* speed pills (reuse ap-speed-btn style) */
-    .sp-speed-row { display: flex; gap: 5px; }
-    .sp-speed-btn {
-      flex: 1; height: 30px; border-radius: 16px;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      background: transparent; color: rgba(255,255,255,0.45);
-      font-size: 10px; font-weight: 700; letter-spacing: 1px;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .sp-speed-btn.active { background: #fff; color: #000; border-color: #fff; }
-    .sp-speed-btn:active { filter: brightness(0.85); transform: scale(0.96); }
+/* ═══════════════════════════════════════════════
+   LANDSCAPE  1280 × 720
+═══════════════════════════════════════════════ */
+#landscape {
+  width: 100%;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.55) 45%, rgba(0,0,0,0.92) 100%);
+  padding: 0 20px 8px;
+  height: 170px;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  overflow: visible;
+}
 
-    /* toggle row */
-    .sp-toggle-row {
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .sp-toggle-label { font-size: 12px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
-    .sp-toggle-track {
-      width: 40px; height: 22px; border-radius: 11px;
-      background: rgba(255,255,255,0.15);
-      position: relative; cursor: pointer; transition: background 0.2s; flex-shrink: 0;
-    }
-    .sp-toggle-track.on { background: #2979ff; }
-    .sp-toggle-thumb {
-      position: absolute; top: 3px; left: 3px;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: #fff; transition: transform 0.2s; pointer-events: none;
-    }
-    .sp-toggle-track.on .sp-toggle-thumb { transform: translateX(18px); }
+#landscape .l-group   { display: flex; align-items: center; gap: 8px; }
+#landscape .l-controls { display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 162px; }
+#landscape .l-spin-row { display: flex; align-items: center; gap: 8px; }
+#landscape .l-sub-row  { display: flex; align-items: center; gap: 10px; }
+#landscape .l-info {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+}
+#landscape .info-block {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: #000;
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 8px;
+  padding: 10px 14px;
+  flex: 1;
+  max-width: 240px;
+}
+#landscape .sep { display: none; }
 
-    /* bottom icon buttons */
-    .sp-icon-row {
-      display: flex; justify-content: space-around;
-      padding: 12px 8px 14px;
-    }
-    .sp-icon-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      background: none; border: none; cursor: pointer;
-    }
-    .sp-icon-btn svg { width: 24px; height: 24px; opacity: 0.75; }
-    .sp-icon-btn span { font-size: 9px; color: rgba(255,255,255,0.6); font-weight: 600; letter-spacing: 0.5px; }
-    .sp-icon-btn:active svg { opacity: 1; }
+#landscape .spin-btn { width: 100px; height: 100px; }
+#landscape .bbtn     { width: 40px;  height: 40px; }
+#landscape .ibtn     { width: 38px;  height: 38px; }
+#landscape .speed-badge { width: 13px; height: 13px; font-size: 7px; bottom: 0; right: 0; }
+#landscape .lbl { font-size: 10px; }
+#landscape .val { font-size: 15px; }
 
-    /* ── Hyper Spin Panel ── */
-    #hs-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 99999;
-    }
-    #hs-overlay.open {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.82);
-    }
-
-    #hs-panel {
-      background: #1a1a2e;
-      border-radius: 18px;
-      padding: 0 0 20px;
-      width: 300px;
-      max-width: 92vw;
-      box-sizing: border-box;
-      flex-shrink: 0;        /* prevent flex compression */
-      display: block;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.8);
-      overflow: hidden;
-    }
-
-    /* title bar */
-    .hs-title-bar {
-      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 60%, #43a047 100%);
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px 12px;
-    }
-    .hs-title-badge {
-      display: flex; align-items: center; gap: 7px;
-      background: rgba(0,0,0,0.25);
-      border-radius: 20px;
-      padding: 5px 12px 5px 8px;
-    }
-    .hs-title-badge .hs-rocket-icon { font-size: 17px; line-height: 1; }
-    .hs-title-badge span { font-size: 13px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 2px; }
-    .hs-close {
-      width: 26px; height: 26px; border-radius: 50%;
-      background: rgba(255,255,255,0.18);
-      font-size: 13px; color: #fff; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      border: none; flex-shrink: 0;
-    }
-    .hs-close:active { background: rgba(255,255,255,0.35); }
-
-    /* rows — .hs-rows is transparent to layout; rows become direct children of #hs-panel */
-    .hs-rows { display: contents; }
-    .hs-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 18px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-    }
-    .hs-row:last-child { border-bottom: none; }
-
-    .hs-row-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-    .hs-row-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; }
-    .hs-row-sub   { font-size: 9px;  color: rgba(255,255,255,0.30); text-transform: uppercase; letter-spacing: 1px; }
-
-    /* counter */
-    .hs-counter { display: flex; align-items: center; gap: 10px; }
-    .hs-counter-btn {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.18);
-      color: #fff; font-size: 18px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      line-height: 1; flex-shrink: 0;
-      transition: background 0.12s;
-    }
-    .hs-counter-btn:active { background: rgba(255,255,255,0.22); transform: scale(0.9); }
-    .hs-counter-val { font-size: 15px; font-weight: 800; color: #fff; min-width: 72px; text-align: center; }
-
-    /* toggle */
-    .hs-toggle-right { display: flex; align-items: center; gap: 8px; }
-    .hs-info-btn {
-      width: 20px; height: 20px; border-radius: 50%;
-      background: rgba(255,255,255,0.12); border: none;
-      color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 900;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0;
-    }
-    .hs-toggle-track {
-      width: 44px; height: 24px; border-radius: 12px;
-      background: rgba(255,255,255,0.15);
-      position: relative; cursor: pointer;
-      transition: background 0.2s; flex-shrink: 0;
-    }
-    .hs-toggle-track.on { background: #43a047; }
-    .hs-toggle-thumb {
-      position: absolute; top: 3px; left: 3px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: #fff; transition: transform 0.2s; pointer-events: none;
-    }
-    .hs-toggle-track.on .hs-toggle-thumb { transform: translateX(20px); }
-
-    /* saldo row */
-    .hs-saldo {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      padding: 12px 18px 0;
-    }
-    .hs-saldo-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; }
-    .hs-saldo-val   { font-size: 14px; font-weight: 800; color: #81c784; letter-spacing: 0.5px; }
-
-    /* play button */
-    .hs-play-wrap {
-      display: flex; justify-content: center;
-      padding: 16px 0 4px;
-    }
-    .hs-play-btn {
-      width: 64px; height: 64px; border-radius: 50%;
-      background: radial-gradient(circle at 38% 38%, #66bb6a, #2e7d32);
-      border: 3px solid #a5d6a7;
-      box-shadow: 0 4px 18px rgba(46,125,50,0.6);
-      color: #fff; font-size: 26px;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: filter 0.12s, transform 0.12s;
-      padding-left: 4px; /* optical center for ▶ */
-    }
-    .hs-play-btn:active { filter: brightness(0.82); transform: scale(0.93); }
-
-    /* ── Auto Play Panel ── */
-    #auto-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: 99998;
-    }
-    #auto-overlay.open {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: rgba(0,0,0,0.82);
-    }
-
-    #auto-panel {
-      background: #1a1a1a;
-      border-radius: 14px;
-      padding: 22px 24px 20px;
-      width: 320px;
-      max-width: 90vw;
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.7);
-    }
-
-    /* title row */
-    .ap-title {
-      display: flex; align-items: center; justify-content: center;
-      position: relative;
-    }
-    .ap-title span {
-      font-size: 15px; font-weight: 800; color: #fff;
-      text-transform: uppercase; letter-spacing: 2px;
-    }
-    .ap-close {
-      position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-      width: 28px; height: 28px; border-radius: 50%;
-      background: rgba(255,255,255,0.12);
-      font-size: 16px; color: #fff; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      border: none; line-height: 1;
-    }
-    .ap-close:active { background: rgba(255,255,255,0.28); transform: translateY(-50%); }
-
-    /* section label */
-    .ap-section-label {
-      font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45);
-      text-transform: uppercase; letter-spacing: 1.5px;
-      margin-bottom: 8px;
-    }
-
-    /* speed selector */
-    .ap-speed-row {
-      display: flex; gap: 6px;
-    }
-    .ap-speed-btn {
-      flex: 1; height: 36px; border-radius: 20px;
-      border: 1.5px solid rgba(255,255,255,0.2);
-      background: transparent; color: rgba(255,255,255,0.5);
-      font-size: 11px; font-weight: 700; letter-spacing: 1px;
-      cursor: pointer; transition: all 0.15s;
-    }
-    .ap-speed-btn.active {
-      background: #fff; color: #000;
-      border-color: #fff;
-    }
-    .ap-speed-btn:active { filter: brightness(0.85); transform: scale(0.96); }
-
-    /* counter row */
-    .ap-row {
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .ap-row-label {
-      font-size: 13px; font-weight: 700; color: #fff;
-      text-transform: uppercase; letter-spacing: 1px;
-    }
-    .ap-counter {
-      display: flex; align-items: center; gap: 12px;
-    }
-    .ap-counter-btn {
-      width: 30px; height: 30px; border-radius: 50%;
-      background: rgba(255,255,255,0.1); border: none;
-      color: #fff; font-size: 18px; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      line-height: 1;
-    }
-    .ap-counter-btn:active { background: rgba(255,255,255,0.25); transform: scale(0.9); }
-    .ap-counter-val {
-      font-size: 17px; font-weight: 800; color: #fff;
-      min-width: 56px; text-align: center;
-    }
-
-    /* until feature toggle */
-    .ap-toggle-track {
-      width: 44px; height: 24px; border-radius: 12px;
-      background: rgba(255,255,255,0.15);
-      position: relative; cursor: pointer;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-    .ap-toggle-track.on { background: #00c8a0; }
-    .ap-toggle-thumb {
-      position: absolute; top: 3px; left: 3px;
-      width: 18px; height: 18px; border-radius: 50%;
-      background: #fff;
-      transition: transform 0.2s;
-      pointer-events: none;
-    }
-    .ap-toggle-track.on .ap-toggle-thumb { transform: translateX(20px); }
-
-    /* start button */
-    .ap-start {
-      width: 100%; height: 48px; border-radius: 10px;
-      background: #00c8a0; border: none;
-      color: #000; font-size: 14px; font-weight: 900;
-      letter-spacing: 2px; text-transform: uppercase;
-      cursor: pointer; transition: filter 0.15s;
-    }
-    .ap-start:active { filter: brightness(0.85); transform: scale(0.98); }
-
-    /* ═══════════════════════════════════════════════
-       PORTRAIT LAYOUT
-    ═══════════════════════════════════════════════ */
-    /* ── PORTRAIT  720 × 1280 ── */
-    #portrait {
-      width: 100%;
-      max-width: 720px;
-      margin: 0 auto;
-      background: rgba(0,0,0,0.75);
-      border-top: 1px solid rgba(255,255,255,0.12);
-      padding: 12px 22px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    /* info row */
-    #portrait .p-info {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      width: 100%;
-      padding: 2px 0;
-    }
-    #portrait .p-info .info-block {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      background: #000;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 8px;
-      padding: 6px 18px;
-      min-width: 150px;
-    }
-    #portrait .p-info .sep { display: none; }
-
-    /* controls row */
-    #portrait .p-controls {
-      display: flex;
-      align-items: center;
-      width: 100%;
-      overflow: visible;
-      padding-bottom: 4px;
-    }
-
-    /* 左右 side 各佔一份，中間 p-center 自然置中 */
-    #portrait .p-side { display: flex; flex-direction: column; gap: 12px; flex: 1; }
-    #portrait .p-side:last-child { align-items: flex-end; }
-
-    /* center: - spin + */
-    #portrait .p-center { display: flex; align-items: center; gap: 5px; flex: 0 0 auto; }
+/* ── Visibility ── */
+#portrait  { display: flex; }
+#landscape { display: none; }
+body.is-landscape #portrait  { display: none !important; }
+body.is-landscape #landscape { display: flex !important; }
+body.is-portrait  #portrait  { display: flex !important; }
+body.is-portrait  #landscape { display: none !important; }
 
 
-    /* ═══════════════════════════════════════════════
-       LANDSCAPE  1280 × 720
-       bar 高 ≈ 720 × 12.5% = 90px
-       spin   ≈ 720 × 8.9%  = 64px
-       ibtn   ≈ 720 × 5.8%  = 42px
-       bbtn   ≈ 720 × 6.1%  = 44px
-    ═══════════════════════════════════════════════ */
-    #landscape {
-      width: 100%;
-      background: rgba(0,0,0,0.75);
-      border-top: 1px solid rgba(255,255,255,0.12);
-      padding: 0 24px;
-      height: 90px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      overflow: visible;
-    }
+/* ── Settings Panel ── */
+#settings-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 99998;
+}
+#settings-overlay.open {
+  display: block;
+  background: rgba(0,0,0,0.82);
+}
 
-    #landscape .l-group { display: flex; align-items: center; gap: 10px; }
-    #landscape .l-info {
-      display: flex;
-      flex: 1;
-      justify-content: center;
-      align-items: center;
-      gap: 24px;
-    }
-    #landscape .info-block {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      background: #000;
-      border: 1px solid rgba(255,255,255,0.18);
-      border-radius: 8px;
-      padding: 5px 16px;
-      min-width: 120px;
-    }
-    #landscape .sep { display: none; }
+#settings-panel {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1c1c1c;
+  border-radius: 16px;
+  width: min(340px, 92vw);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+}
+/* 橫式：左對齊，底部對齊底欄上方 */
+body.is-landscape #settings-panel {
+  left: 12px;
+  bottom: 180px;
+  top: auto;
+  transform: none;
+  width: min(340px, 55vw);
+}
 
-    /* Landscape sizes */
-    #landscape .spin-btn { width: 64px; height: 64px; }
-    #landscape .bbtn     { width: 44px; height: 44px; }
-    #landscape .ibtn     { width: 42px; height: 42px; }
-    #landscape .speed-badge { width: 14px; height: 14px; font-size: 8px; bottom: 0; right: 0; }
-    #landscape .lbl { font-size: 10px; }
-    #landscape .val { font-size: 14px; }
+/* title */
+.sp-title-bar {
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  padding: 28px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.sp-title-bar span {
+  font-size: 15px; font-weight: 800; color: #fff;
+  text-transform: uppercase; letter-spacing: 2px;
+}
+.sp-close {
+  position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  font-size: 14px; color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border: none; flex-shrink: 0;
+}
+.sp-close:active { background: rgba(255,255,255,0.28); }
 
-    /* ── Visibility：由 JS 依 innerWidth < innerHeight 動態切換 class ── */
-    /* 預設顯示直式（JS 執行前的 fallback） */
-    #portrait  { display: flex; }
-    #landscape { display: none; }
-    /* JS 加上 class 後才生效 */
-    body.is-landscape #portrait  { display: none !important; }
-    body.is-landscape #landscape { display: flex !important; }
-    body.is-portrait  #portrait  { display: flex !important; }
-    body.is-portrait  #landscape { display: none !important; }
-  </style>
+/* section */
+.sp-section {
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  display: flex; flex-direction: column; gap: 20px;
+}
+.sp-section-label {
+  font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 1.5px;
+}
+
+/* speed selector — single image with 3 transparent click zones */
+.sp-speed-selector { position: relative; width: 100%; }
+.sp-speed-selector > img { width: 100%; height: auto; display: block; }
+.sp-speed-zone {
+  position: absolute; top: 0; bottom: 0; width: 33.34%;
+  background: none; border: none; cursor: pointer;
+}
+.sp-speed-zone[data-spd="normal"] { left: 0; }
+.sp-speed-zone[data-spd="fast"]   { left: 33.33%; }
+.sp-speed-zone[data-spd="turbo"]  { left: 66.67%; }
+.sp-speed-zone:active { opacity: 0.6; }
+
+/* toggle row */
+.sp-toggle-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sp-toggle-label { font-size: 13px; font-weight: 700; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+.sp-toggle-track {
+  width: 64px; height: 32px; border-radius: 16px;
+  background: rgba(255,255,255,0.15);
+  position: relative; cursor: pointer; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.sp-toggle-track.on { background: #00c8a0; }
+.sp-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+  transition: left 0.2s; pointer-events: none;
+}
+.sp-toggle-track.on .sp-toggle-thumb { left: calc(100% - 29px); }
+
+/* bottom icon buttons */
+.sp-icon-row {
+  display: flex; justify-content: space-around;
+  padding: 26px 10px 30px;
+}
+.sp-icon-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  background: none; border: none; cursor: pointer;
+}
+.sp-icon-btn img { width: 48px; height: 48px; display: block; }
+.sp-icon-btn span { font-size: 10px; color: rgba(255,255,255,0.6); font-weight: 600; letter-spacing: 0.5px; }
+.sp-icon-btn:active { opacity: 0.7; }
+
+
+/* ── Hyper Spin Panel ── */
+#hs-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 99999;
+}
+#hs-overlay.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.82);
+}
+
+#hs-panel {
+  background: #1a1a2e;
+  border-radius: 18px;
+  padding: 0 0 20px;
+  width: 300px;
+  max-width: 92vw;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  display: block;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.8);
+  overflow: hidden;
+}
+
+/* title bar */
+.hs-title-bar {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 60%, #43a047 100%);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 16px 12px;
+}
+.hs-title-badge {
+  display: flex; align-items: center; gap: 7px;
+  background: rgba(0,0,0,0.25);
+  border-radius: 20px;
+  padding: 5px 12px 5px 8px;
+}
+.hs-title-badge .hs-rocket-icon { font-size: 17px; line-height: 1; }
+.hs-title-badge span { font-size: 13px; font-weight: 900; color: #fff; text-transform: uppercase; letter-spacing: 2px; }
+.hs-close {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  font-size: 13px; color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border: none; flex-shrink: 0;
+}
+.hs-close:active { background: rgba(255,255,255,0.35); }
+
+.hs-rows { display: contents; }
+.hs-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+.hs-row:last-child { border-bottom: none; }
+
+.hs-row-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.hs-row-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; }
+.hs-row-sub   { font-size: 9px;  color: rgba(255,255,255,0.30); text-transform: uppercase; letter-spacing: 1px; }
+
+/* counter */
+.hs-counter { display: flex; align-items: center; gap: 10px; }
+.hs-counter-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.18);
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1; flex-shrink: 0;
+  transition: background 0.12s;
+}
+.hs-counter-btn:active { background: rgba(255,255,255,0.22); transform: scale(0.9); }
+.hs-counter-val { font-size: 15px; font-weight: 800; color: #fff; min-width: 72px; text-align: center; }
+
+/* toggle */
+.hs-toggle-right { display: flex; align-items: center; gap: 8px; }
+.hs-info-btn {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(255,255,255,0.12); border: none;
+  color: rgba(255,255,255,0.6); font-size: 11px; font-weight: 900;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.hs-toggle-track {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  position: relative; cursor: pointer;
+  transition: background 0.2s; flex-shrink: 0;
+}
+.hs-toggle-track.on { background: #43a047; }
+.hs-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff; transition: transform 0.2s; pointer-events: none;
+}
+.hs-toggle-track.on .hs-toggle-thumb { transform: translateX(20px); }
+
+/* saldo row */
+.hs-saldo {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 12px 18px 0;
+}
+.hs-saldo-label { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.45); text-transform: uppercase; letter-spacing: 1.5px; }
+.hs-saldo-val   { font-size: 14px; font-weight: 800; color: #81c784; letter-spacing: 0.5px; }
+
+/* play button */
+.hs-play-wrap {
+  display: flex; justify-content: center;
+  padding: 16px 0 4px;
+}
+.hs-play-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: radial-gradient(circle at 38% 38%, #66bb6a, #2e7d32);
+  border: 3px solid #a5d6a7;
+  box-shadow: 0 4px 18px rgba(46,125,50,0.6);
+  color: #fff; font-size: 26px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: filter 0.12s, transform 0.12s;
+  padding-left: 4px;
+}
+.hs-play-btn:active { filter: brightness(0.82); transform: scale(0.93); }
+
+
+/* ── Auto Play Panel ── */
+#auto-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  z-index: 99998;
+}
+#auto-overlay.open {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.82);
+}
+
+#auto-panel {
+  background: #1a1a1a;
+  border-radius: 14px;
+  padding: 22px 24px 20px;
+  width: 320px;
+  max-width: 90vw;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.7);
+}
+
+/* title row */
+.ap-title {
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.ap-title span {
+  font-size: 15px; font-weight: 800; color: #fff;
+  text-transform: uppercase; letter-spacing: 2px;
+}
+.ap-close {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  font-size: 16px; color: #fff; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  border: none; line-height: 1;
+}
+.ap-close:active { background: rgba(255,255,255,0.28); transform: translateY(-50%); }
+
+/* section label */
+.ap-section-label {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45);
+  text-transform: uppercase; letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+
+/* speed selector — same image style as settings panel */
+.ap-speed-zone {
+  position: absolute; top: 0; bottom: 0; width: 33.34%;
+  background: none; border: none; cursor: pointer;
+}
+.ap-speed-zone[data-spd="normal"] { left: 0; }
+.ap-speed-zone[data-spd="fast"]   { left: 33.33%; }
+.ap-speed-zone[data-spd="turbo"]  { left: 66.67%; }
+.ap-speed-zone:active { opacity: 0.6; }
+
+/* counter row */
+.ap-row {
+  display: flex; align-items: center; justify-content: space-between;
+}
+.ap-row-label {
+  font-size: 13px; font-weight: 700; color: #fff;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+.ap-counter {
+  display: flex; align-items: center; gap: 12px;
+}
+.ap-counter-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,0.1); border: none;
+  color: #fff; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+.ap-counter-btn:active { background: rgba(255,255,255,0.25); transform: scale(0.9); }
+.ap-counter-val {
+  font-size: 17px; font-weight: 800; color: #fff;
+  min-width: 56px; text-align: center;
+}
+
+/* until feature toggle */
+.ap-toggle-track {
+  width: 44px; height: 24px; border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  position: relative; cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.ap-toggle-track.on { background: #00c8a0; }
+.ap-toggle-thumb {
+  position: absolute; top: 3px; left: 3px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+  pointer-events: none;
+}
+.ap-toggle-track.on .ap-toggle-thumb { transform: translateX(20px); }
+
+/* start button */
+.ap-start {
+  width: 100%; height: 48px; border-radius: 10px;
+  background: #00c8a0; border: none;
+  color: #000; font-size: 14px; font-weight: 900;
+  letter-spacing: 2px; text-transform: uppercase;
+  cursor: pointer; transition: filter 0.15s;
+}
+.ap-start:active { filter: brightness(0.85); transform: scale(0.98); }
+
+</style>
 </head>
 <body>
 
@@ -562,23 +564,21 @@
 <div id="settings-overlay">
   <div id="settings-panel">
 
-    <!-- Title -->
     <div class="sp-title-bar">
       <span>Settings</span>
       <button class="sp-close" id="sp-close">✕</button>
     </div>
 
-    <!-- Spin Animation -->
     <div class="sp-section">
       <div class="sp-section-label">Spin Animation</div>
-      <div class="sp-speed-row">
-        <button class="sp-speed-btn active" data-spd="normal">⊙ Normal</button>
-        <button class="sp-speed-btn"        data-spd="fast">⚡ Fast</button>
-        <button class="sp-speed-btn"        data-spd="turbo">⚡ Turbo</button>
+      <div class="sp-speed-selector">
+        <img src="images/UI_SPEED_SELECTOR_NORMAL.png" id="sp-speed-img" alt="">
+        <button class="sp-speed-zone" data-spd="normal"></button>
+        <button class="sp-speed-zone" data-spd="fast"></button>
+        <button class="sp-speed-zone" data-spd="turbo"></button>
       </div>
     </div>
 
-    <!-- Sound Effect -->
     <div class="sp-section">
       <div class="sp-toggle-row">
         <span class="sp-toggle-label">Sound Effect</span>
@@ -588,7 +588,6 @@
       </div>
     </div>
 
-    <!-- Music -->
     <div class="sp-section">
       <div class="sp-toggle-row">
         <span class="sp-toggle-label">Music</span>
@@ -598,32 +597,21 @@
       </div>
     </div>
 
-    <!-- Icon Buttons -->
     <div class="sp-icon-row">
       <button class="sp-icon-btn" id="sp-history">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/>
-        </svg>
+        <img src="images/SETTINGS_ACTION_HISTORY_ICON.png" alt="History">
         <span>History</span>
       </button>
       <button class="sp-icon-btn" id="sp-fullscreen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/>
-          <line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/>
-        </svg>
+        <img src="images/SETTINGS_ACTION_FULLSCREEN_ICON.png" alt="Full Screen">
         <span>Full Screen</span>
       </button>
       <button class="sp-icon-btn" id="sp-howtoplay">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="9"/>
-          <path d="M9.5 9a3 3 0 0 1 5.2 2c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12" y2="17.5"/>
-        </svg>
+        <img src="images/SETTINGS_ACTION_HOWTOPLAY_ICON.png" alt="How to Play">
         <span>How to Play</span>
       </button>
       <button class="sp-icon-btn" id="sp-favorite">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/>
-        </svg>
+        <img src="images/FAVORITE.png" alt="Favorite" id="sp-favorite-img">
         <span>Favorite</span>
       </button>
     </div>
@@ -631,11 +619,11 @@
   </div>
 </div>
 
+
 <!-- ═══════════════════ HYPER SPIN PANEL ══════════ -->
 <div id="hs-overlay">
   <div id="hs-panel">
 
-    <!-- Title bar -->
     <div class="hs-title-bar">
       <div class="hs-title-badge">
         <span class="hs-rocket-icon">🚀</span>
@@ -644,10 +632,8 @@
       <button class="hs-close" id="hs-close">✕</button>
     </div>
 
-    <!-- Body rows -->
     <div class="hs-rows">
 
-      <!-- TARUHAN / BET -->
       <div class="hs-row">
         <div class="hs-row-left">
           <span class="hs-row-label">Taruhan</span>
@@ -660,7 +646,6 @@
         </div>
       </div>
 
-      <!-- PUTARAN / SPINS -->
       <div class="hs-row">
         <div class="hs-row-left">
           <span class="hs-row-label">Putaran</span>
@@ -673,7 +658,6 @@
         </div>
       </div>
 
-      <!-- SUPER BET -->
       <div class="hs-row">
         <div class="hs-row-left">
           <span class="hs-row-label">Super Bet</span>
@@ -683,7 +667,6 @@
         </div>
       </div>
 
-      <!-- BERHENTI DI SCATTER -->
       <div class="hs-row">
         <div class="hs-row-left">
           <span class="hs-row-label">Berhenti Di Scatter</span>
@@ -697,15 +680,13 @@
         </div>
       </div>
 
-    </div><!-- /hs-rows -->
+    </div>
 
-    <!-- SALDO / BALANCE -->
     <div class="hs-saldo">
       <span class="hs-saldo-label">Saldo</span>
       <span class="hs-saldo-val" id="hs-saldo-val">$ 0.0</span>
     </div>
 
-    <!-- Play button -->
     <div class="hs-play-wrap">
       <button class="hs-play-btn" id="hs-play">▶</button>
     </div>
@@ -713,27 +694,26 @@
   </div>
 </div>
 
+
 <!-- ═══════════════════ AUTO PLAY PANEL ═══════════ -->
 <div id="auto-overlay">
   <div id="auto-panel">
 
-    <!-- Title -->
     <div class="ap-title">
       <span>Auto Play</span>
       <button class="ap-close" id="ap-close">✕</button>
     </div>
 
-    <!-- Speed -->
     <div>
       <div class="ap-section-label">Auto Play Spin Animation</div>
-      <div class="ap-speed-row">
-        <button class="ap-speed-btn active" data-speed="normal">Normal</button>
-        <button class="ap-speed-btn"        data-speed="fast">⚡ Fast</button>
-        <button class="ap-speed-btn"        data-speed="turbo">⚡ Turbo</button>
+      <div class="sp-speed-selector">
+        <img src="images/UI_SPEED_SELECTOR_NORMAL.png" id="ap-speed-img" alt="">
+        <button class="ap-speed-zone" data-spd="normal"></button>
+        <button class="ap-speed-zone" data-spd="fast"></button>
+        <button class="ap-speed-zone" data-spd="turbo"></button>
       </div>
     </div>
 
-    <!-- Bet -->
     <div class="ap-row">
       <span class="ap-row-label">Bet</span>
       <div class="ap-counter">
@@ -743,7 +723,6 @@
       </div>
     </div>
 
-    <!-- Spins -->
     <div class="ap-row">
       <span class="ap-row-label">Spin</span>
       <div class="ap-counter">
@@ -753,7 +732,6 @@
       </div>
     </div>
 
-    <!-- Until Feature -->
     <div class="ap-row">
       <span class="ap-row-label">Until Feature</span>
       <div class="ap-toggle-track" id="ap-feature-toggle">
@@ -761,16 +739,15 @@
       </div>
     </div>
 
-    <!-- Start -->
     <button class="ap-start" id="ap-start">Start</button>
 
   </div>
 </div>
 
+
 <!-- ═══════════════════ PORTRAIT ═══════════════════ -->
 <div id="portrait">
 
-  <!-- Info row -->
   <div class="p-info">
     <div class="info-block">
       <span class="lbl">Balance</span>
@@ -788,35 +765,30 @@
     </div>
   </div>
 
-  <!-- Controls row -->
   <div class="p-controls">
 
-    <!-- Left: Speed (top) + Auto Spin (bottom) -->
     <div class="p-side">
       <button class="ibtn" id="p-speed" title="Spin Speed">
         <img src="images/UI_BUTTON_SPEED_FAST.png" alt="Speed" draggable="false">
-        <span class="speed-badge" id="p-speed-badge">1</span>
       </button>
       <button class="ibtn" id="p-auto" title="Auto Spin">
         <img src="images/UI_BUTTON_AUTOPLAY_IDLE.png" alt="Auto" draggable="false">
-        <span class="auto-badge" id="p-auto-badge">0</span>
       </button>
     </div>
 
-    <!-- Center: − SPIN + -->
     <div class="p-center">
       <button class="bbtn" id="p-minus" title="Decrease Bet">
         <img src="images/UI_BUTTON_MINUS.png" alt="-" draggable="false">
       </button>
       <button class="spin-btn" id="p-spin" title="Spin">
         <img src="images/UI_BUTTON_SPIN.png" alt="Spin" draggable="false">
+        <span class="auto-count-face" id="p-spin-auto-count">∞</span>
       </button>
       <button class="bbtn" id="p-plus" title="Increase Bet">
         <img src="images/UI_BUTTON_PLUS.png" alt="+" draggable="false">
       </button>
     </div>
 
-    <!-- Right: Rocket (top) + More Options (bottom) -->
     <div class="p-side">
       <button class="ibtn" id="p-rocket" title="Rocket Spin">
         <img src="images/UI_BUTTON_HYPERSPIN.png" alt="Rocket" draggable="false">
@@ -827,24 +799,20 @@
     </div>
 
   </div>
-</div><!-- /portrait -->
-
+</div>
 
 <!-- ═══════════════════ LANDSCAPE ═══════════════════ -->
 <div id="landscape">
 
-  <!-- Left: Menu + Auto Spin -->
   <div class="l-group">
     <button class="ibtn" id="l-menu" title="More Options">
       <img src="images/UI_BUTTON_SETTING.png" alt="Menu" draggable="false">
     </button>
-    <button class="ibtn" id="l-auto" title="Auto Spin">
-      <img src="images/UI_BUTTON_AUTOPLAY_IDLE.png" alt="Auto" draggable="false">
-      <span class="auto-badge" id="l-auto-badge">0</span>
+    <button class="ibtn" id="l-rocket" title="Rocket Spin">
+      <img src="images/UI_BUTTON_HYPERSPIN.png" alt="Rocket" draggable="false">
     </button>
   </div>
 
-  <!-- Info -->
   <div class="l-info">
     <div class="info-block">
       <span class="lbl">Balance</span>
@@ -862,42 +830,34 @@
     </div>
   </div>
 
-  <!-- − SPIN + -->
-  <div class="l-group">
-    <button class="bbtn" id="l-minus" title="Decrease Bet">
-      <img src="images/UI_BUTTON_MINUS.png" alt="-" draggable="false">
-    </button>
-    <button class="spin-btn" id="l-spin" title="Spin">
-      <img src="images/UI_BUTTON_SPIN.png" alt="Spin" draggable="false">
-    </button>
-    <button class="bbtn" id="l-plus" title="Increase Bet">
-      <img src="images/UI_BUTTON_PLUS.png" alt="+" draggable="false">
-    </button>
+  <div class="l-controls">
+    <div class="l-spin-row">
+      <button class="bbtn" id="l-minus" title="Decrease Bet">
+        <img src="images/UI_BUTTON_MINUS.png" alt="-" draggable="false">
+      </button>
+      <button class="spin-btn" id="l-spin" title="Spin">
+        <img src="images/UI_BUTTON_SPIN.png" alt="Spin" draggable="false">
+        <span class="auto-count-face" id="l-spin-auto-count">∞</span>
+      </button>
+      <button class="bbtn" id="l-plus" title="Increase Bet">
+        <img src="images/UI_BUTTON_PLUS.png" alt="+" draggable="false">
+      </button>
+    </div>
+    <div class="l-sub-row">
+      <button class="ibtn" id="l-speed" title="Spin Speed">
+        <img src="images/UI_BUTTON_SPEED_FAST.png" alt="Speed" draggable="false">
+      </button>
+      <button class="ibtn" id="l-auto" title="Auto Spin">
+        <img src="images/UI_BUTTON_AUTOPLAY_IDLE.png" alt="Auto" draggable="false">
+      </button>
+    </div>
   </div>
 
-  <!-- Right: Speed + Rocket -->
-  <div class="l-group">
-    <button class="ibtn" id="l-speed" title="Spin Speed">
-      <img src="images/UI_BUTTON_SPEED_FAST.png" alt="Speed" draggable="false">
-      <span class="speed-badge" id="l-speed-badge">1</span>
-    </button>
-    <button class="ibtn" id="l-rocket" title="Rocket Spin">
-      <img src="images/UI_BUTTON_HYPERSPIN.png" alt="Rocket" draggable="false">
-    </button>
-  </div>
-
-</div><!-- /landscape -->
-
+</div>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════
    方向切換：width < height → 直式 / width > height → 橫式
-
-   優先順序：
-   1. URL 參數 ?p=1（直式）?p=0（橫式）→ 初始載入時用，無時序問題
-   2. postMessage { type:'slotUI:orientation', portrait:true/false }
-      → 動態切換方向（demo.html resize / 遊戲引擎觸發）
-   3. 獨立視窗自行偵測 innerWidth < innerHeight
 ═══════════════════════════════════════════════════════════════ */
 (function () {
   function setOrientation(portrait) {
@@ -905,26 +865,23 @@
     document.body.classList.toggle('is-landscape', !portrait);
   }
 
-  /* 1. URL 參數決定初始方向（iframe 模式由父層帶入，消除 race condition） */
   var urlParams  = new URLSearchParams(window.location.search);
   var paramValue = urlParams.get('p');
   if (paramValue !== null) {
     setOrientation(paramValue === '1');
   }
 
-  /* 2. postMessage 動態切換（覆蓋 URL 參數） */
   window.addEventListener('message', function (e) {
     if (e.data && e.data.type === 'slotUI:orientation') {
       setOrientation(!!e.data.portrait);
     }
   });
 
-  /* 3. 獨立視窗模式：自行監聽 resize */
   if (window.self === window.top) {
     function autoDetect() {
       setOrientation(window.innerWidth < window.innerHeight);
     }
-    if (paramValue === null) { autoDetect(); }   /* 無 URL 參數才自動偵測 */
+    if (paramValue === null) { autoDetect(); }
     window.addEventListener('resize', autoDetect);
     window.addEventListener('orientationchange', function () {
       setTimeout(autoDetect, 50);
@@ -933,18 +890,15 @@
 })();
 
 /**
- * SlotControl UI
- * ─────────────────────────────────────────────────────────────────
- * 發出事件 → window:  slotControl:<action>
- * 接收事件 ← window:  slotControl:set<Prop>
- *
- * 相容 Cocos Creator（WebView / DOM overlay）& PixiJS（DOM layer）
- * ─────────────────────────────────────────────────────────────────
+ * SlotControl UI — core state, render, and button actions.
+ * Build chain: slot-control.js → panel-auto.js → panel-hyperspin.js
+ *              → panel-settings.js → slot-control-init.js
+ * The IIFE below is intentionally left open; slot-control-init.js closes it.
  */
 (function () {
   'use strict';
 
-  /* ── State ─────────────────────────────────────────────────── */
+  /* ── State ── */
   var state = {
     balance:    0,
     totalBet:   0,
@@ -952,20 +906,19 @@
     betStep:    0,
     minBet:     0,
     maxBet:     0,
-    speedMode:  0,          // 0=normal  1=fast  2=turbo
+    speedMode:  1,          // 0=normal  1=fast  2=turbo
     isSpinning: false,
-    layout:     ''          // 'portrait' | 'landscape'
+    layout:     ''
   };
 
-  /* Speed mode metadata */
   var SPEED_LABELS      = ['normal', 'fast',    'turbo'  ];
   var SPEED_BADGE_TEXT  = ['1',      '2',       '3'      ];
   var SPEED_BADGE_COLOR = ['#999',   '#f7d12e', '#ff4b4b'];
-  var SPEED_FILTER      = ['brightness(1)',
-                           'brightness(1.25)',
-                           'brightness(1.5) saturate(1.6)'];
+  var SPEED_IMAGES      = ['images/UI_BUTTON_SPEED_NORMAL.png',
+                           'images/UI_BUTTON_SPEED_FAST.png',
+                           'images/UI_BUTTON_SPEED_TURBO.png'];
 
-  /* ── Helpers ───────────────────────────────────────────────── */
+  /* ── Helpers ── */
   function fmt(n) {
     return '$ ' + n.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   }
@@ -974,7 +927,7 @@
     window.dispatchEvent(new CustomEvent('slotControl:' + name, { detail: detail || {} }));
   }
 
-  /* ── Render ────────────────────────────────────────────────── */
+  /* ── Render ── */
   function renderInfo() {
     document.getElementById('p-balance').textContent = fmt(state.balance);
     document.getElementById('p-bet').textContent     = fmt(state.totalBet);
@@ -985,20 +938,13 @@
   }
 
   function renderSpeed() {
-    var badge  = SPEED_BADGE_TEXT[state.speedMode];
-    var color  = SPEED_BADGE_COLOR[state.speedMode];
-    var filter = SPEED_FILTER[state.speedMode];
-
-    ['p-speed-badge', 'l-speed-badge'].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (!el) return;
-      el.textContent       = badge;
-      el.style.background  = color;
-    });
-
+    var src = SPEED_IMAGES[state.speedMode];
     ['p-speed', 'l-speed'].forEach(function (id) {
       var el = document.getElementById(id);
-      if (el) el.style.filter = filter;
+      if (!el) return;
+      el.style.filter = '';
+      var img = el.querySelector('img');
+      if (img) img.src = src;
     });
   }
 
@@ -1016,28 +962,25 @@
     ['p-bet', 'l-bet'].forEach(function (id) {
       var el = document.getElementById(id);
       el.classList.remove('flash');
-      void el.offsetWidth;   // reflow
+      void el.offsetWidth;
       el.classList.add('flash');
     });
   }
 
-  /* ── Layout detection ──────────────────────────────────────── */
+  /* ── Layout detection ── */
   function checkLayout() {
     var isLand = window.innerWidth > window.innerHeight;
     var next   = isLand ? 'landscape' : 'portrait';
     if (next === state.layout) return;
     state.layout = next;
-
     var p = document.getElementById('portrait');
     var l = document.getElementById('landscape');
-
     if (isLand) { p.style.display = 'none'; l.style.display = 'flex'; }
     else        { p.style.display = 'flex'; l.style.display = 'none'; }
-
     dispatch('layoutChange', { layout: next, width: window.innerWidth, height: window.innerHeight });
   }
 
-  /* ── Button actions ────────────────────────────────────────── */
+  /* ── Button actions ── */
   function onSpin() {
     if (state.isSpinning) {
       setSpinning(false);
@@ -1049,13 +992,11 @@
   }
 
   function onMinus() {
-    // 不做本地 min/max 判斷，讓遊戲的 betIdx 系統決定是否可減
     dispatch('betChange', { totalBet: state.totalBet, direction: 'down' });
     flashBet();
   }
 
   function onPlus() {
-    // 不做本地 min/max 判斷，讓遊戲的 betIdx 系統決定是否可加
     dispatch('betChange', { totalBet: state.totalBet, direction: 'up' });
     flashBet();
   }
@@ -1066,7 +1007,10 @@
     dispatch('speedChange', { mode: SPEED_LABELS[state.speedMode], modeIndex: state.speedMode });
   }
 
-  /* ── Auto Play panel ──────────────────────────────────────── */
+  /* ── Panel code follows (injected by build.js) ── */
+
+
+  /* ── Auto Play panel ── */
   var autoState = {
     speed:        'normal',
     bet:          0,
@@ -1075,12 +1019,12 @@
     untilFeature: false,
   };
   var SPIN_OPTIONS = [5, 10, 20, 50, 100, 200, 500];
+  var autoSpinRunning = false;
 
   function openAutoPanel() {
-    autoState.bet   = state.totalBet;
+    autoState.bet    = state.totalBet;
     autoState.betIdx = 0;
-    // 預設選中當前速度
-    autoState.speed = SPEED_LABELS[state.speedMode] || 'normal';
+    autoState.speed  = SPEED_LABELS[state.speedMode] || 'normal';
     renderAutoPanel();
     document.getElementById('auto-overlay').classList.add('open');
   }
@@ -1095,9 +1039,8 @@
     var toggle = document.getElementById('ap-feature-toggle');
     if (autoState.untilFeature) toggle.classList.add('on');
     else toggle.classList.remove('on');
-    document.querySelectorAll('.ap-speed-btn').forEach(function(btn) {
-      btn.classList.toggle('active', btn.dataset.speed === autoState.speed);
-    });
+    var apImg = document.getElementById('ap-speed-img');
+    if (apImg) apImg.src = SP_SPEED_IMAGES[autoState.speed];
   }
 
   function initAutoPanel() {
@@ -1106,15 +1049,13 @@
       if (e.target === this) closeAutoPanel();
     });
 
-    // speed
-    document.querySelectorAll('.ap-speed-btn').forEach(function(btn) {
+    document.querySelectorAll('.ap-speed-zone').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        autoState.speed = this.dataset.speed;
+        autoState.speed = this.dataset.spd;
         renderAutoPanel();
       });
     });
 
-    // bet
     document.getElementById('ap-bet-minus').addEventListener('click', function() {
       var next = Math.max(state.minBet, +(autoState.bet - state.betStep).toFixed(2));
       if (next !== autoState.bet) { autoState.bet = next; renderAutoPanel(); }
@@ -1124,12 +1065,10 @@
       if (next !== autoState.bet) { autoState.bet = next; renderAutoPanel(); }
     });
 
-    // spins
     document.getElementById('ap-spin-minus').addEventListener('click', function() {
       var idx = SPIN_OPTIONS.indexOf(autoState.spins);
       if (idx > 0) { autoState.spins = SPIN_OPTIONS[idx - 1]; renderAutoPanel(); }
       else if (idx === 0) { autoState.spins = 999; renderAutoPanel(); }
-      // idx === -1 表示目前是 ∞，再按 − 維持 ∞
     });
     document.getElementById('ap-spin-plus').addEventListener('click', function() {
       var idx = SPIN_OPTIONS.indexOf(autoState.spins);
@@ -1137,53 +1076,36 @@
       else { autoState.spins = 999; renderAutoPanel(); }
     });
 
-    // until feature
     document.getElementById('ap-feature-toggle').addEventListener('click', function() {
       autoState.untilFeature = !autoState.untilFeature;
       renderAutoPanel();
     });
 
-    // start
     document.getElementById('ap-start').addEventListener('click', function() {
       closeAutoPanel();
-      // 把速度同步到主按鈕
       var speedIdx = SPEED_LABELS.indexOf(autoState.speed);
       if (speedIdx < 0) speedIdx = 0;
       if (speedIdx !== state.speedMode) {
         state.speedMode = speedIdx;
         renderSpeed();
-        dispatch('speedChange', { mode: autoState.speed, modeIndex: speedIdx });
       }
       dispatch('autoSpinStart', {
         bet:          autoState.bet,
         spins:        autoState.spins >= 999 ? -1 : autoState.spins,
         speed:        autoState.speed,
-        modeIndex:    speedIdx,
+        speedIndex:   speedIdx,
         untilFeature: autoState.untilFeature,
       });
     });
   }
 
-  /* ── Auto Spin running state ─────────────────────────────────────────────── */
-  var autoSpinRunning = false;
-
   function setAutoSpinning(running, remaining) {
     autoSpinRunning = running;
-    var badgeText = running ? (remaining > 0 ? String(remaining) : '∞') : '0';
-
-    // auto button badge
-    ['p-auto', 'l-auto'].forEach(function(id) {
-      var btn = document.getElementById(id);
-      if (!btn) return;
-      if (running) btn.classList.add('auto-spinning');
-      else         btn.classList.remove('auto-spinning');
-    });
-    ['p-auto-badge', 'l-auto-badge'].forEach(function(id) {
+    var countText = running ? (remaining > 0 ? String(remaining) : '∞') : '∞';
+    ['p-spin-auto-count', 'l-spin-auto-count'].forEach(function(id) {
       var el = document.getElementById(id);
-      if (el) el.textContent = badgeText;
+      if (el) el.textContent = countText;
     });
-
-    // lock / unlock spin button
     ['p-spin', 'l-spin'].forEach(function(id) {
       var el = document.getElementById(id);
       if (!el) return;
@@ -1200,7 +1122,8 @@
     }
   }
 
-  /* ── Hyper Spin panel ─────────────────────────────────────────── */
+
+  /* ── Hyper Spin panel ── */
   var HS_SPIN_OPTIONS = [5, 10, 20, 30, 50];
   var hsState = {
     bet:           0,
@@ -1220,8 +1143,8 @@
     document.getElementById('hs-overlay').classList.remove('open');
   }
   function renderHyperSpinPanel() {
-    document.getElementById('hs-bet-val').textContent  = fmt(hsState.bet);
-    document.getElementById('hs-spin-val').textContent = String(hsState.spins);
+    document.getElementById('hs-bet-val').textContent   = fmt(hsState.bet);
+    document.getElementById('hs-spin-val').textContent  = String(hsState.spins);
     document.getElementById('hs-saldo-val').textContent = fmt(state.balance);
     var sbEl = document.getElementById('hs-superbet-toggle');
     var scEl = document.getElementById('hs-scatter-toggle');
@@ -1234,16 +1157,13 @@
       if (e.target === this) closeHyperSpinPanel();
     });
 
-    // bet −/+: delegate to game's bet system (same as main bar)
     document.getElementById('hs-bet-minus').addEventListener('click', function() {
       dispatch('betChange', { totalBet: hsState.bet, direction: 'down' });
-      // UI will update via slotControl:setTotalBet → sync back to hsState.bet
     });
     document.getElementById('hs-bet-plus').addEventListener('click', function() {
       dispatch('betChange', { totalBet: hsState.bet, direction: 'up' });
     });
 
-    // spins −/+
     document.getElementById('hs-spin-minus').addEventListener('click', function() {
       var idx = HS_SPIN_OPTIONS.indexOf(hsState.spins);
       if (idx > 0) { hsState.spins = HS_SPIN_OPTIONS[idx - 1]; renderHyperSpinPanel(); }
@@ -1253,24 +1173,17 @@
       if (idx < HS_SPIN_OPTIONS.length - 1) { hsState.spins = HS_SPIN_OPTIONS[idx + 1]; renderHyperSpinPanel(); }
     });
 
-    // super bet toggle
     document.getElementById('hs-superbet-toggle').addEventListener('click', function() {
       hsState.superBet = !hsState.superBet;
       renderHyperSpinPanel();
     });
-
-    // stop at scatter toggle
     document.getElementById('hs-scatter-toggle').addEventListener('click', function() {
       hsState.stopAtScatter = !hsState.stopAtScatter;
       renderHyperSpinPanel();
     });
-
-    // scatter info button
     document.getElementById('hs-scatter-info').addEventListener('click', function() {
       dispatch('hyperSpinScatterInfo', {});
     });
-
-    // play button
     document.getElementById('hs-play').addEventListener('click', function() {
       closeHyperSpinPanel();
       dispatch('hyperSpinStart', {
@@ -1284,8 +1197,15 @@
 
   function onRocket() { openHyperSpinPanel(); }
 
-  /* ── Settings panel ─────────────────────────────────────────── */
-  var settingsState = { spinSpeed: 'normal', sfx: true, music: true };
+
+  /* ── Settings panel ── */
+  var settingsState = { spinSpeed: 'fast', sfx: true, music: true, favorite: false };
+
+  var SP_SPEED_IMAGES = {
+    normal: 'images/UI_SPEED_SELECTOR_NORMAL.png',
+    fast:   'images/UI_SPEED_SELECTOR_FAST.png',
+    turbo:  'images/UI_SPEED_SELECTOR_TURBO.png',
+  };
 
   function openSettings() {
     renderSettings();
@@ -1295,20 +1215,23 @@
     document.getElementById('settings-overlay').classList.remove('open');
   }
   function renderSettings() {
-    document.querySelectorAll('.sp-speed-btn').forEach(function(btn) {
-      btn.classList.toggle('active', btn.dataset.spd === settingsState.spinSpeed);
-    });
+    var spImg = document.getElementById('sp-speed-img');
+    if (spImg) spImg.src = SP_SPEED_IMAGES[settingsState.spinSpeed];
     var sfxEl = document.getElementById('sp-sfx-toggle');
     var musEl = document.getElementById('sp-music-toggle');
     if (settingsState.sfx)   sfxEl.classList.add('on'); else sfxEl.classList.remove('on');
     if (settingsState.music) musEl.classList.add('on'); else musEl.classList.remove('on');
+    var favImg = document.getElementById('sp-favorite-img');
+    if (favImg) favImg.src = settingsState.favorite
+      ? 'images/SETTINGS_ACTION_FAVORITE_ICON_ACTIVE.png'
+      : 'images/FAVORITE.png';
   }
   function initSettings() {
     document.getElementById('sp-close').addEventListener('click', closeSettings);
     document.getElementById('settings-overlay').addEventListener('click', function(e) {
       if (e.target === this) closeSettings();
     });
-    document.querySelectorAll('.sp-speed-btn').forEach(function(btn) {
+    document.querySelectorAll('.sp-speed-zone').forEach(function(btn) {
       btn.addEventListener('click', function() {
         settingsState.spinSpeed = this.dataset.spd;
         renderSettings();
@@ -1328,12 +1251,17 @@
     document.getElementById('sp-history').addEventListener('click',    function() { closeSettings(); dispatch('menuHistory',    {}); });
     document.getElementById('sp-fullscreen').addEventListener('click', function() { closeSettings(); dispatch('menuFullscreen', {}); });
     document.getElementById('sp-howtoplay').addEventListener('click',  function() { closeSettings(); dispatch('menuHowToPlay',  {}); });
-    document.getElementById('sp-favorite').addEventListener('click',   function() { closeSettings(); dispatch('menuFavorite',   {}); });
+    document.getElementById('sp-favorite').addEventListener('click', function() {
+      settingsState.favorite = !settingsState.favorite;
+      renderSettings();
+      dispatch('settingsFavoriteChange', { on: settingsState.favorite });
+    });
   }
 
   function onMenu() { openSettings(); }
 
-  /* ── Wire buttons ──────────────────────────────────────────── */
+
+  /* ── Wire buttons ── */
   function bind(id, fn) {
     var el = document.getElementById(id);
     if (el) el.addEventListener('click', fn);
@@ -1357,7 +1285,7 @@
     renderSpeed();
   }
 
-  /* ── External API (game engine → UI) ──────────────────────── */
+  /* ── External API (game engine → UI) ── */
   window.addEventListener('slotControl:setBalance', function (e) {
     state.balance = +e.detail.balance; renderInfo();
   });
@@ -1366,9 +1294,8 @@
   });
   window.addEventListener('slotControl:setTotalBet', function (e) {
     state.totalBet = +e.detail.totalBet;
-    hsState.bet    = state.totalBet;   // keep hyper spin bet in sync
+    hsState.bet    = state.totalBet;
     renderInfo(); flashBet();
-    // if hyper spin panel is open, refresh its bet display
     if (document.getElementById('hs-overlay').classList.contains('open')) {
       document.getElementById('hs-bet-val').textContent = fmt(state.totalBet);
     }
@@ -1391,7 +1318,7 @@
     setAutoSpinning(!!e.detail.running, +e.detail.remaining);
   });
 
-  /* ── Public JS API ─────────────────────────────────────────── */
+  /* ── Public JS API ── */
   window.SlotControl = {
     getState:    function () { return Object.assign({}, state); },
     setBalance:  function (v) { state.balance  = v; renderInfo(); },
@@ -1407,7 +1334,8 @@
     init();
   }
 
-}());
+}()); /* ← closes the main IIFE opened in slot-control.js */
+
 </script>
 </body>
 </html>

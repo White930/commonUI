@@ -78,6 +78,12 @@
         document.head.appendChild(fix);
 
         console.log('[SlotUI] 注入完成，BASE_PATH=' + BASE_PATH);
+
+        // ── 自動載入遊戲 connector（若存在）────────────────────────────────
+        var connectorScript = document.createElement('script');
+        connectorScript.src = BASE_PATH + 'connector.js';
+        connectorScript.onerror = function() { /* connector.js 不存在，忽略 */ };
+        document.body.appendChild(connectorScript);
       })
       .catch(function (e) {
         console.error('[SlotUI] 載入失敗：', e);

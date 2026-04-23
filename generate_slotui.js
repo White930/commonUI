@@ -39,7 +39,7 @@ _imgs.forEach(function(name) {
 });
 
 // ── 2. 讀取 slot-control.html 並替換圖片 ────────────────────────────────────
-let html = fs.readFileSync(path.join(__dirname, 'slot-control.html'), 'utf8');
+let html = fs.readFileSync(path.join(__dirname, 'dist', 'slot-control.html'), 'utf8');
 for (const [src, data] of Object.entries(imgMap)) {
   // 替換 HTML src 屬性：src="images/..."
   html = html.split('src="' + src + '"').join('src="' + data + '"');

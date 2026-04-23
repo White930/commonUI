@@ -48,5 +48,7 @@ const result = html
   .replace('<script src="slot-control.js"></script>',
            '<script>\n' + js + '\n</script>');
 
-fs.writeFileSync(path.join(dir, 'slot-control.html'), result);
+const distDir = path.join(dir, 'dist');
+if (!fs.existsSync(distDir)) fs.mkdirSync(distDir);
+fs.writeFileSync(path.join(distDir, 'slot-control.html'), result);
 console.log('✓ slot-control.html built (' + result.split('\n').length + ' lines)');

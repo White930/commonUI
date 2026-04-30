@@ -68,7 +68,10 @@
       "Bash(npm list *)",
       "mcp__Claude_in_Chrome__javascript_tool",
       "mcp__Claude_in_Chrome__read_network_requests",
-      "Bash(copy \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-55\\\\preview-template\\\\slot-ui\\\\connector.js\" \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-55\\\\build-templates\\\\web-mobile\\\\slot-ui\\\\connector.js\")"
+      "Bash(copy \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-55\\\\preview-template\\\\slot-ui\\\\connector.js\" \"C:\\\\Users\\\\white.li\\\\Documents\\\\client-55\\\\build-templates\\\\web-mobile\\\\slot-ui\\\\connector.js\")",
+      "Bash(powershell -Command \"Get-WmiObject -Class Win32_SoundDevice | Select-Object Name, Status, DeviceID\")",
+      "Bash(powershell -Command \"Get-WmiObject -Class Win32_SoundDevice | Select-Object Name, Status, StatusInfo, ConfigManagerErrorCode | Format-List\")",
+      "Bash(powershell -Command \"Get-PnpDevice -Class 'AudioEndpoint' | Select-Object FriendlyName, Status, Problem | Format-Table -AutoSize\")"
     ]
   }
 }
